@@ -31,18 +31,10 @@ def respond_in_plaintext(fn):
 #
 
 
-@route('/', method='GET', apply=[respond_in_plaintext])#, catch_exceptions])
+@route('/', method='GET', apply=[respond_in_plaintext, catch_exceptions])
 def index(db):
-    report = db.execute('''SELECT DATE(date) AS 'Date',
-((MAX(kwh1)-MIN(kwh1))+(MAX(kwh2)-MIN(kwh2)))*1.0/1000 AS 'Total kWh',
-(MAX(gas)-MIN(gas))*1.0/1000 AS 'Total Gas',
-MAX(kwh1) as 'Meter kWh1',
-MAX(kwh2) as 'Meter kWh2',
-MAX(gas) as 'Meter gas'
-FROM data
-GROUP BY DATE(date)''')
-    result = [r['date'] for r in report]
-    return '\n'.join(result)
+    from subprocess import check_output
+    return check_output(['bin/report.sh'])
 
 
 
