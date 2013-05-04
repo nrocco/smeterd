@@ -28,7 +28,8 @@ def read_meter(args):
 
     if args.database:
         from smeterd import storage
-        db = storage._get_db_abspath(args.database)
+        from smeterd import utils
+        db = utils.get_absolute_path(args.database)
         log.debug('Storing data in database %s', db)
         storage.store_single_packet(db, packet)
     else:
