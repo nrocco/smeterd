@@ -14,7 +14,7 @@ setup(
     install_requires=['pyserial==2.6'],
     entry_points = {
         'console_scripts': [
-            'smeterd = smeterd.__main__',
+            'smeterd = smeterd.main:parse_and_run',
         ]
     },
     classifiers=[
