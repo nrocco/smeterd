@@ -9,7 +9,11 @@ log = logging.getLogger(__name__)
 
 VERSION = 'v1.5'
 DESC='''Read smart meter P1 packets'''
+
 DEFAULT_DB='smeter.sqlite'
+DEFAULT_PORT=8000
+DEFAULT_SOCKET='0.0.0.0:%s' % DEFAULT_PORT
+DEFAULT_SERIAL='/dev/ttyUSB0'
 
 
 
@@ -50,8 +54,9 @@ def webserver(args):
     from smeterd import webserver
     parts = args.bind.split(':')
     host = parts[0]
-    port = parts[1] if len(parts) > 1 else 8000
-    webserver.start_webserver(host, port, 'smeter.sqlite', auto_reload=args.auto_reload)
+    port = parts[1] if len(parts) > 1 else DEFAULT_PORT
+    webserver.start_webserver(host, port, DEFAULT_DB,
+                              auto_reload=args.auto_reload)
 
 
 
@@ -72,9 +77,9 @@ if '__main__' == __name__:
 
     # create the parser for the "read-meter" command
     parser_a = subparsers.add_parser('read-meter', help='Read a single P1 packet')
-    parser_a.add_argument('-p', '--serial-port', default='/dev/ttyUSB0',
+    parser_a.add_argument('-p', '--serial-port', default=DEFAULT_SERIAL,
                           metavar='/dev/ttyXXXX',
-                          help='serial port to read packets from. Defaults to /dev/ttyUSB0')
+                          help='serial port to read packets from. Defaults to %s' % DEFAULT_SERIAL)
     parser_a.add_argument('-r', '--raw', action='store_true',
                           help='display packet in raw form')
     parser_a.add_argument('-d', '--database', metavar=DEFAULT_DB,
@@ -85,9 +90,10 @@ if '__main__' == __name__:
     # create the parser for the "webserver" command
     parser_b = subparsers.add_parser('webserver', help='Start a webserver')
     parser_b.add_argument('-b', '--bind', metavar='address:port',
-                          default='0.0.0.0:8000', help='Inet socket to bind to')
+                          default=DEFAULT_SOCKET,
+                          help='Inet socket to bind to. Defaults to %s' % DEFAULT_SOCKET)
     parser_b.add_argument('-r', '--auto-reload',
-                          action='store_true', help='Auto respawn server')
+                          action='store_true', help='auto respawn server')
     parser_b.set_defaults(func=webserver)
 
 
