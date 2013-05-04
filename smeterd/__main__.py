@@ -63,8 +63,7 @@ def webserver(args):
 
 
 
-
-if '__main__' == __name__:
+def main():
     # create the top-level parser
     parser = ArgumentParser(prog='smeterd', description=DESC)
     parser.add_argument('--version', action='version', version='%(prog)s ' + VERSION)
@@ -114,3 +113,6 @@ if '__main__' == __name__:
 
     # call the subcommand
     args.func(args)
+
+if '__main__' == __name__:
+    main()
