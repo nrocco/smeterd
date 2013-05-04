@@ -1,6 +1,7 @@
 import re
 import logging
 import serial
+from datetime import datetime
 
 
 
@@ -26,6 +27,7 @@ class SmartMeter(object):
                                     parity=serial.PARITY_EVEN,
                                     stopbits=serial.STOPBITS_ONE)
         self.port = self.serial.portstr
+        log.debug('New serial connection opened to %s', self.port)
 
 
     def connect(self):
@@ -51,10 +53,11 @@ class SmartMeter(object):
     def read_one_packet(self):
         raw = []
         i = 20
+        log.debug('Start reading %d lines', i)
         while i > 0:
             raw.append(str(self.serial.readline()).strip())
             i = i - 1
-
+        log.debug('Done reading lines. Constructing P1Packet')
         return P1Packet('\n'.join(raw))
 
 
@@ -62,6 +65,7 @@ class SmartMeter(object):
 class P1Packet(object):
     def __init__(self, data):
         self._data = data
+        self.date = datetime.now()
         self.uid = RE_UID.search(data).group(1)
         self.kwh1 = float(RE_KWH1.search(data).group(1))
         self.kwh2 = float(RE_KWH2.search(data).group(1))
@@ -72,3 +76,10 @@ class P1Packet(object):
     def __str__(self):
         return self._data
 
+
+def read_one_packet(serial_port='/dev/ttyUSB0'):
+    meter = SmartMeter(serial_port)
+    meter.serial.setRTS(False)
+    packet = meter.read_one_packet()
+    meter.disconnect()
+    return packet

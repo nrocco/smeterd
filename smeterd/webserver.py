@@ -1,7 +1,9 @@
-from subprocess import check_output
-
 from libs.bottle import route, run, response, request, install
 from libs.bottle_sqlite import SQLitePlugin
+
+from smeterd import storage
+from smeterd import utils
+
 
 
 def catch_exceptions(fn):
@@ -26,11 +28,16 @@ def respond_in_plaintext(fn):
 
 
 @route('/', method='GET', apply=[respond_in_plaintext, catch_exceptions])
-def index(db):
-    return check_output(['bin/report.sh'])
+def index():
+    data = storage.generate_report(DBNAME)
+    return utils.dictionary_list_to_plaintext_table(data)
 
 
-def start_webserver(host, port, auto_reload=False):
-    DBNAME = 'smeter.sqlite'
-    install(SQLitePlugin(dbfile=DBNAME))
+DBNAME = ''
+
+def start_webserver(host, port, db, auto_reload=False):
+    #install(SQLitePlugin(dbfile=DBNAME))
+    global DBNAME
+    DBNAME = utils.get_absolute_path(db)
     run(host=host, port=port, reloader=auto_reload)
+
