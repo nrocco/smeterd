@@ -105,6 +105,12 @@ usage by generating a daily usage report like so:
 
     $ smeterd report --database mydata.sqlite
 
+    date         total_kwh   total_gas   kwh1      kwh2       gas     
+
+    2013-04-23   0.176       0.001       300.716   165.041    685.901 
+    2013-04-24   4.871       0.813       301.697   168.943    686.714 
+    2013-04-25   3.255       0.97        302.716   171.192    687.69
+
 
 usage as a python module
 ------------------------
