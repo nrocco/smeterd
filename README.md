@@ -93,7 +93,38 @@ usage by generating a daily usage report like so:
 usage as a python module
 ------------------------
 
-TODO
+If using `smeterd` as a cli application you will find that its functionality
+is quite limited. You can use the `smeterd` package as a regular python module
+so you can integrate the reading of P1 packets into your own solutions.
+
+First initiate a new SmartMeter object
+
+    >>> from smeterd.meter import SmartMeter
+    >>> meter = SmartMeter('/dev/ttyS0')
+
+
+Now to read one packet from the meter:
+
+    >>> packet = meter.read_one_packet()
+    >>> print packet
+
+Do not forget to close the connection to the serial port
+
+    >>> meter.disconnect()
+
+
+The `SmartMeter.meter.read_one_packet()` function will return an instance of
+the `smeterd.meter.P1Packet` class.
+
+Currently `7` values are extracted from the raw P1 packets:
+
+    packet.date
+    packet.uid
+    packet.kwh1
+    packet.kwh2
+    packet.gas
+    packet.tariff
+    packet.current_usage
 
 
 usage as a http web service
