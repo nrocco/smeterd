@@ -8,13 +8,24 @@ installation
 ------------
 
 It is highly recommended to use virtualenv for this.
-After having your virtualenv activated run
+After having your virtualenv activated run the following command to install
+the `smeterd` package using pip directly from github.
+
+    pip install -e git+https://github.com/nrocco/smeterd.git#egg=smeterd-dev
+
+
+Alternatively you can manually clone `smeterd` and run:
 
     python setup.py install
 
 
 This will install the needed python libraries (in this case only pyserial)
 which are needed to start reading P1 packets.
+
+If you don't want to install `smeterd` as a package you can run it directly
+from the source code tree using:
+
+    python -m smeterd
 
 
 usage as a cli application
