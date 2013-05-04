@@ -11,21 +11,23 @@ It is highly recommended to use virtualenv for this.
 After having your virtualenv activated run the following command to install
 the `smeterd` package using pip directly from github.
 
-    pip install -e git+https://github.com/nrocco/smeterd.git#egg=smeterd-dev
+    $ pip install -e git+https://github.com/nrocco/smeterd.git#egg=smeterd-dev
 
 
 Alternatively you can manually clone `smeterd` and run:
 
-    python setup.py install
+    $ git clone https://github.com/nrocco/smeterd.git
+    $ cd smeterd
+    $ python setup.py install
 
 
 This will install the needed python libraries (in this case only pyserial)
 which are needed to start reading P1 packets.
 
 If you don't want to install `smeterd` as a package you can run it directly
-from the source code tree using:
+from the root directory of the git repository using:
 
-    python -m smeterd
+    $ python -m smeterd
 
 
 usage as a cli application
@@ -93,7 +95,9 @@ like this:
     $ smeterd read-meter --database mydata.sqlite
 
 
-Typically you run this command from `cron` every x minutes (e.g. 5 minutes).
+Typically you run this command from `cron` every x minutes (e.g. 5 minutes):
+
+    */5 * * * * /path/to/virtualenv/bin/smeterd read-meter -d meter_data.sqlite
 
 
 After having collected enough data you can get an overview of your every day
