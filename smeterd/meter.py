@@ -26,6 +26,7 @@ class SmartMeter(object):
                                     bytesize=serial.SEVENBITS,
                                     parity=serial.PARITY_EVEN,
                                     stopbits=serial.STOPBITS_ONE)
+        self.serial.setRTS(False)
         self.port = self.serial.portstr
         log.debug('New serial connection opened to %s', self.port)
 
@@ -34,6 +35,7 @@ class SmartMeter(object):
         if not self.serial.isOpen():
             log.debug('Opening connection to `%s`', self.serial.portstr)
             self.serial.open()
+            self.serial.setRTS(False)
         else:
             log.debug('`%s` was already open.', self.serial.portstr)
 
@@ -79,7 +81,6 @@ class P1Packet(object):
 
 def read_one_packet(serial_port='/dev/ttyUSB0'):
     meter = SmartMeter(serial_port)
-    meter.serial.setRTS(False)
     packet = meter.read_one_packet()
     meter.disconnect()
     return packet
