@@ -56,7 +56,7 @@ def webserver(args):
     parts = args.bind.split(':')
     host = parts[0]
     port = parts[1] if len(parts) > 1 else DEFAULT_PORT
-    webserver.start_webserver(host, port, DEFAULT_DB,
+    webserver.start_webserver(host, port, args.database,
                               auto_reload=args.auto_reload)
 
 
@@ -92,6 +92,9 @@ def parse_and_run():
     parser_b.add_argument('-b', '--bind', metavar='address:port',
                           default=DEFAULT_SOCKET,
                           help='Inet socket to bind to. Defaults to %s' % DEFAULT_SOCKET)
+    parser_b.add_argument('-d', '--database',
+                          default=DEFAULT_DB, metavar=DEFAULT_DB,
+                          help='sqlite database containig smeter data. defaults to %s' % DEFAULT_DB)
     parser_b.add_argument('-r', '--auto-reload',
                           action='store_true', help='auto respawn server')
     parser_b.set_defaults(func=webserver)
