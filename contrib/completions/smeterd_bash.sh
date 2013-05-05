@@ -9,7 +9,7 @@ _smeterd_bash_completion()
       ;;
 
     read-meter)
-      local opts="-h --help --serial-port -p -r -d --database"
+      local opts="-h --help --serial-port -p -r --raw -d --database"
       ;;
 
     webserver)
