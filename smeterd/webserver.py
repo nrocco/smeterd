@@ -1,5 +1,5 @@
-from libs.bottle import route, run, response, request, install
-from libs.bottle_sqlite import SQLitePlugin
+from bottle import route, run, response, request, install
+#from bottle_sqlite import SQLitePlugin
 
 from smeterd import storage
 from smeterd import utils

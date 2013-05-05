@@ -2,13 +2,13 @@ import sys
 import logging
 from argparse import ArgumentParser
 
+from smeterd import VERSION
+from smeterd import DESC
+
 
 
 log = logging.getLogger(__name__)
 
-
-VERSION = 'v1.5'
-DESC='''Read smart meter P1 packets'''
 
 DEFAULT_DB='smeter.sqlite'
 DEFAULT_PORT=8000
