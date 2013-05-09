@@ -70,8 +70,30 @@ def webserver(args, **kwargs):
     webserver.start_webserver(host, port, db, auto_reload=args.auto_reload)
 
 
+def rrd(args, parser):
+    from smeterd import rrd
 
+    rrdfile = utils.get_absolute_path(args.rrdfile)
+    db = utils.get_absolute_path(args.database)
 
+    if 'create' == args.action:
+        rrd.create_rrd_database(rrdfile)
+        log.info('RRD Database created: %s', rrdfile)
+
+    elif 'import' == args.action:
+        if not isfile(rrdfile):
+            parser.error('No rrd database found at %s' % rrdfile)
+        if not isfile(db):
+            parser.error('No database found at path %s' % db)
+
+        log.info('Import sqlite data from %s into rrd', args.database)
+        rrd.import_data_into_rrd(args.database, rrdfile)
+
+    elif 'graph' == args.action:
+        rrd.graph(rrdfile)
+
+    else:
+        log.error('Unsupported action %s', args.action)
 
 
 
@@ -117,6 +139,16 @@ def parse_and_run():
                           default=DEFAULT_DB, metavar=DEFAULT_DB,
                           help='sqlite database containig smeter data. defaults to %s' % DEFAULT_DB)
     parser_c.set_defaults(func=report)
+
+
+    # create the parser for the "rrd" command
+    parser_d = subparsers.add_parser('rrd', help='Generate rrd graphs')
+    parser_d.add_argument('action', choices=['create','import', 'graph'])
+    parser_d.add_argument('rrdfile', help='path to the rrd file')
+    parser_d.add_argument('-d', '--database',
+                          default=DEFAULT_DB, metavar=DEFAULT_DB,
+                          help='sqlite database containig smeter data. defaults to %s' % DEFAULT_DB)
+    parser_d.set_defaults(func=rrd)
 
 
     # parse command line arguments
