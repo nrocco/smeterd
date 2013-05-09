@@ -75,6 +75,15 @@ class P1Packet(object):
         self.tariff = int(RE_TARIFF.search(data).group(1))
         self.current_usage = float(RE_CURRENT_USAGE.search(data).group(1))
 
+    def kwh1_asint(self):
+        return int(self.kwh1 * 1000)
+
+    def kwh2_asint(self):
+        return int(self.kwh2 * 1000)
+
+    def gas_asint(self):
+        return int(self.gas * 1000)
+
     def __str__(self):
         return self._data
 

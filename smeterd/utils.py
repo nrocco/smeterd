@@ -16,14 +16,3 @@ def get_absolute_path(filename):
         return filename
     else:
         return path.abspath(filename)
-
-
-def dictionary_list_to_plaintext_table(data):
-    if len(data) == 0:
-        return ''
-    result = []
-    result.append('\t'.join(format(h, '8s') for h in data[0].keys()))
-    result.append('')
-    for row in data:
-        result.append('\t'.join(format(str(e), '8s') for e in row))
-    return '\n'.join(result)

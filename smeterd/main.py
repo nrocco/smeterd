@@ -1,9 +1,12 @@
 import sys
 import logging
+from subprocess import check_output
+from os.path import isfile
 from argparse import ArgumentParser
 
 from smeterd import VERSION
 from smeterd import DESC
+from smeterd import utils
 
 
 
@@ -17,7 +20,7 @@ DEFAULT_SERIAL='/dev/ttyUSB0'
 
 
 
-def read_meter(args):
+def read_meter(args, **kwargs):
     '''
     Read a single packet from the smart meter.
     Packets can either be printed to stdout or stored
@@ -28,7 +31,6 @@ def read_meter(args):
 
     if args.database:
         from smeterd import storage
-        from smeterd import utils
         db = utils.get_absolute_path(args.database)
         log.debug('Storing data in database %s', db)
         storage.store_single_packet(db, packet)
@@ -42,22 +44,31 @@ def read_meter(args):
             print 'Gas:       ', packet.gas
 
 
-def report(args):
-    from smeterd import storage
-    from smeterd import utils
+def report(args, parser, **kwargs):
+    from smeterd.storage import SQL_DAILY_RESULTS
+
     db = utils.get_absolute_path(args.database)
+
+    if not isfile(db):
+        parser.error('No database found at path %s' % db)
+
     log.debug('Working with database %s', db)
-    data = storage.generate_report(db)
-    print utils.dictionary_list_to_plaintext_table(data)
+    print check_output(['sqlite3', '-header', '-column',
+                        db, SQL_DAILY_RESULTS]),
 
 
-def webserver(args):
+def webserver(args, **kwargs):
     from smeterd import webserver
+    db = utils.get_absolute_path(args.database)
+
+    if not isfile(db):
+        parser.error('No database found at path %s' % db)
+
     parts = args.bind.split(':')
     host = parts[0]
     port = parts[1] if len(parts) > 1 else DEFAULT_PORT
-    webserver.start_webserver(host, port, args.database,
-                              auto_reload=args.auto_reload)
+    webserver.start_webserver(host, port, db, auto_reload=args.auto_reload)
+
 
 
 
@@ -116,4 +127,4 @@ def parse_and_run():
     logging.basicConfig(level=loglevel, format='%(asctime)-15s %(levelname)s %(message)s')
 
     # call the subcommand
-    args.func(args)
+    args.func(args, parser=parser)

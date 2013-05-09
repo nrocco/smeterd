@@ -18,7 +18,8 @@ setup(
     include_package_data = True,
     install_requires = [
         'pyserial>=2.6',
-        'bottle>=0.11.6'
+        'bottle>=0.11.6',
+        'bottle-sqlite>=0.1.2'
     ],
     entry_points = {
         'console_scripts': [
