@@ -1,8 +1,6 @@
-import sys
 import logging
 from subprocess import check_output
 from os.path import isfile
-from argparse import ArgumentParser
 
 from smeterd import VERSION
 from smeterd import DESC
@@ -13,6 +11,7 @@ from smeterd import utils
 log = logging.getLogger(__name__)
 
 
+DEFAULT_CONFIG='/etc/defaults/smeterd.conf'
 DEFAULT_DB='smeter.sqlite'
 DEFAULT_PORT=8000
 DEFAULT_SOCKET='0.0.0.0:%s' % DEFAULT_PORT
@@ -20,7 +19,7 @@ DEFAULT_SERIAL='/dev/ttyUSB0'
 
 
 
-def read_meter(args, **kwargs):
+def read_meter(args, parser):
     '''
     Read a single packet from the smart meter.
     Packets can either be printed to stdout or stored
@@ -32,11 +31,15 @@ def read_meter(args, **kwargs):
     if args.database:
         from smeterd import storage
         db = utils.get_absolute_path(args.database)
+        if not isfile(db):
+            parser.error('No database found at path %s' % db)
         log.debug('Storing data in database %s', db)
         storage.store_single_packet(db, packet)
+
     else:
         if args.raw:
             print str(packet)
+
         else:
             print 'Date:      ', packet.date
             print 'kWh 1:     ', packet.kwh1
@@ -44,7 +47,7 @@ def read_meter(args, **kwargs):
             print 'Gas:       ', packet.gas
 
 
-def report(args, parser, **kwargs):
+def report(args, parser):
     from smeterd.storage import SQL_DAILY_RESULTS
 
     db = utils.get_absolute_path(args.database)
@@ -57,7 +60,7 @@ def report(args, parser, **kwargs):
                         db, SQL_DAILY_RESULTS]),
 
 
-def webserver(args, **kwargs):
+def webserver(args, parser):
     from smeterd import webserver
     db = utils.get_absolute_path(args.database)
 
@@ -96,17 +99,21 @@ def rrd(args, parser):
         log.error('Unsupported action %s', args.action)
 
 
+def add_db_arg(parser):
+    parser.add_argument('-d', '--database',
+                        default=DEFAULT_DB, metavar=DEFAULT_DB,
+                        help='sqlite database containig smeter data. '
+                             'defaults to %s' % DEFAULT_DB)
+
 
 def parse_and_run():
+    from pycli_tools import get_argparser
     # create the top-level parser
-    parser = ArgumentParser(prog='smeterd', description=DESC)
-    parser.add_argument('--version', action='version', version='%(prog)s ' + VERSION)
-    parser.add_argument('-v', '--verbose', action='count',
-                        default=0, help='output more verbose')
-    parser.add_argument('-q', '--quiet', action='store_true',
-                        help='surpress all output')
+    parser = get_argparser(prog='smeterd', version=VERSION,
+                           default_config=DEFAULT_CONFIG, description=DESC)
     subparsers = parser.add_subparsers()
 
+    logging.basicConfig(format='%(asctime)-15s %(levelname)s %(message)s')
 
     # create the parser for the "read-meter" command
     parser_a = subparsers.add_parser('read-meter', help='Read a single P1 packet')
@@ -115,8 +122,7 @@ def parse_and_run():
                           help='serial port to read packets from. Defaults to %s' % DEFAULT_SERIAL)
     parser_a.add_argument('-r', '--raw', action='store_true',
                           help='display packet in raw form')
-    parser_a.add_argument('-d', '--database', metavar=DEFAULT_DB,
-                          help='path to a sqlite database.')
+    add_db_arg(parser_a)
     parser_a.set_defaults(func=read_meter)
 
 
@@ -125,9 +131,7 @@ def parse_and_run():
     parser_b.add_argument('-b', '--bind', metavar='address:port',
                           default=DEFAULT_SOCKET,
                           help='Inet socket to bind to. Defaults to %s' % DEFAULT_SOCKET)
-    parser_b.add_argument('-d', '--database',
-                          default=DEFAULT_DB, metavar=DEFAULT_DB,
-                          help='sqlite database containig smeter data. defaults to %s' % DEFAULT_DB)
+    add_db_arg(parser_b)
     parser_b.add_argument('-r', '--auto-reload',
                           action='store_true', help='auto respawn server')
     parser_b.set_defaults(func=webserver)
@@ -135,28 +139,18 @@ def parse_and_run():
 
     # create the parser for the "report" command
     parser_c = subparsers.add_parser('report', help='Generate reports')
-    parser_c.add_argument('-d', '--database',
-                          default=DEFAULT_DB, metavar=DEFAULT_DB,
-                          help='sqlite database containig smeter data. defaults to %s' % DEFAULT_DB)
+    add_db_arg(parser_c)
     parser_c.set_defaults(func=report)
-
 
     # create the parser for the "rrd" command
     parser_d = subparsers.add_parser('rrd', help='Generate rrd graphs')
     parser_d.add_argument('action', choices=['create','import', 'graph'])
     parser_d.add_argument('rrdfile', help='path to the rrd file')
-    parser_d.add_argument('-d', '--database',
-                          default=DEFAULT_DB, metavar=DEFAULT_DB,
-                          help='sqlite database containig smeter data. defaults to %s' % DEFAULT_DB)
+    add_db_arg(parser_d)
     parser_d.set_defaults(func=rrd)
-
 
     # parse command line arguments
     args = parser.parse_args()
 
-    # set log level
-    loglevel = 100 if args.quiet else max(30 - args.verbose * 10, 10)
-    logging.basicConfig(level=loglevel, format='%(asctime)-15s %(levelname)s %(message)s')
-
-    # call the subcommand
+    # call the subcommand handler function
     args.func(args, parser=parser)

@@ -6,8 +6,6 @@ from datetime import datetime
 
 
 log = logging.getLogger(__name__)
-VERSION = '1.0'
-
 
 
 RE_UID = re.compile(r'^0-0:96\.1\.1\(([^)]+)\)$', re.MULTILINE)

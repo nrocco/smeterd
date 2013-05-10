@@ -1,4 +1,4 @@
-VERSION = '1.6'
+VERSION = '1.7'
 DESC = '''Read smart meter P1 packets'''
 
 

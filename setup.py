@@ -19,7 +19,11 @@ setup(
     install_requires = [
         'pyserial>=2.6',
         'bottle>=0.11.6',
-        'bottle-sqlite>=0.1.2'
+        'bottle-sqlite>=0.1.2',
+        'pycli_tools'
+    ],
+    dependency_links = [
+        'https://github.com/nrocco/pycli-tools/tarball/master#egg=pycli_tools-dev'
     ],
     entry_points = {
         'console_scripts': [
