@@ -11,7 +11,7 @@ It is highly recommended to use virtualenv for this.
 After having your virtualenv installed and activated run the following command to install
 the `smeterd` package directly from github (using pip).
 
-    $ pip install -e git+https://github.com/nrocco/smeterd.git#egg=smeterd-dev
+    $ pip install https://github.com/nrocco/smeterd/archive/master.zip#egg=smeterd-dev
 
 
 Alternatively you can manually clone `smeterd` and run setupttools `setup.py`:
