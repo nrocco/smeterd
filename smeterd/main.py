@@ -107,7 +107,7 @@ def add_db_arg(parser):
 
 
 def parse_and_run():
-    from pycli_tools import get_argparser
+    from pycli_tools.parsers import get_argparser
     # create the top-level parser
     parser = get_argparser(prog='smeterd', version=VERSION,
                            default_config=DEFAULT_CONFIG, description=DESC)
