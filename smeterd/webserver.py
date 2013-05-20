@@ -1,9 +1,11 @@
-from bottle import route, run, response, request, install, template
+from bottle import Bottle, response, run, jinja2_template as template
 from bottle_sqlite import SQLitePlugin
 
 from smeterd import storage
 from smeterd import utils
 
+
+app = Bottle()
 
 
 def catch_exceptions(fn):
@@ -22,43 +24,47 @@ def respond_in_plaintext(fn):
         return fn(*args, **kwargs)
     return wrapper
 
+##
+#########################################################################
+#########################################################################
+##
 
-
-
-
-TABLE_TPL = '''<style>body { font-family: monospace; }</style>
-<table width="100%">
-<tr>
-%for header in result[0].keys():
-    <th style="text-align:left;">{{header}}</td>
-%end
-<tr/>
-%for row in result:
-    <tr>
-    %for col in row:
-        <td>{{col}}</td>
-    %end
-    </tr>
-%end
-</table>'''
-
-
-@route('/', method='GET', apply=[catch_exceptions])
+@app.route('/', method='GET') #, apply=[catch_exceptions])
 def index(db):
-    data = storage.generate_report(db)
-    if len(data) == 0:
-        return ''
-    return template(TABLE_TPL, result=data)
+    data = db.query(storage.Data).order_by('date desc')[0]
 
-@route('/current', method='GET', apply=[respond_in_plaintext, catch_exceptions])
+    return template('active_usage', data=data)
+
+
+@app.route('/report', method='GET') #, apply=[catch_exceptions])
+def report(db, period='daily'):
+    result = storage.generate_report(db)
+    return template('daily_report', data=result)
+
+
+@app.route('/report/<period>', method='GET') #, apply=[catch_exceptions])
+def report(db, period):
+    result = storage.generate_report(db, type='day', period=period)
+    return template('daily_report', data=result)
+
+
+@app.route('/rrd/total.png', method='GET')
+def rrd_image():
+    response.content_type = 'image/png'
+    return open('kwh.png', 'r').read()
+
+
+@app.route('/current', method='GET', apply=[respond_in_plaintext])
 def current():
     from smeterd.meter import read_one_packet
     return read_one_packet()
 
+##
+#########################################################################
+#########################################################################
+##
 
-
-def start_webserver(host, port, db, auto_reload=False):
-    db = utils.get_absolute_path(db)
-    install(SQLitePlugin(dbfile=db))
-    run(host=host, port=port, reloader=auto_reload)
-
+def start_webserver(host, port, db, auto_reload=False, debug=True):
+    global app
+    app.install(SQLitePlugin(dbfile=db))
+    run(app=app, host=host, port=port, debug=debug, reloader=auto_reload)

@@ -47,7 +47,7 @@ def read_meter(args, parser):
 
 
 def report(args, parser):
-    from smeterd.storage import SQL_DAILY_RESULTS
+    from smeterd.storage import SQL_REPORT
 
     db = utils.get_absolute_path(args.database)
 
@@ -55,21 +55,24 @@ def report(args, parser):
         parser.error('No database found at path %s' % db)
 
     log.debug('Working with database %s', db)
-    print check_output(['sqlite3', '-header', '-column',
-                        db, SQL_DAILY_RESULTS]),
+    sql = SQL_REPORT.format(where='1', group_by='DATE(date)')
+    print check_output(['sqlite3', '-header', '-column', db, sql])
 
 
 def webserver(args, parser):
     from smeterd import webserver
-    db = utils.get_absolute_path(args.database)
 
+    db = utils.get_absolute_path(args.database)
     if not isfile(db):
         parser.error('No database found at path %s' % db)
 
     parts = args.bind.split(':')
     host = parts[0]
     port = parts[1] if len(parts) > 1 else DEFAULT_PORT
-    webserver.start_webserver(host, port, db, auto_reload=args.auto_reload)
+    debug = True if not args.quiet and args.loglevel == 10 else False
+
+    webserver.start_webserver(host, port, db, debug=debug,
+                              auto_reload=args.auto_reload)
 
 
 def rrd(args, parser):
