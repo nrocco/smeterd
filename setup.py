@@ -20,7 +20,8 @@ setup(
         'pyserial>=2.6',
         'bottle>=0.11.6',
         'bottle-sqlite>=0.1.2',
-        'pycli_tools>=1.5'
+        'pycli_tools>=1.5',
+        'Jinja2==2.6',
     ],
     dependency_links = [
     ],
