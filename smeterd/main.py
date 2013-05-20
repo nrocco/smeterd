@@ -2,8 +2,7 @@ import logging
 from subprocess import check_output
 from os.path import isfile
 
-from smeterd import VERSION
-from smeterd import DESC
+from smeterd import __version__, __description__
 from smeterd import utils
 
 
@@ -107,10 +106,10 @@ def add_db_arg(parser):
 
 
 def parse_and_run():
-    from pycli_tools import get_argparser
+    from pycli_tools.parsers import get_argparser
     # create the top-level parser
-    parser = get_argparser(prog='smeterd', version=VERSION,
-                           default_config=DEFAULT_CONFIG, description=DESC)
+    parser = get_argparser(prog='smeterd', version=__version__,
+                           default_config=DEFAULT_CONFIG, description=__description__)
     subparsers = parser.add_subparsers()
 
     logging.basicConfig(format='%(asctime)-15s %(levelname)s %(message)s')

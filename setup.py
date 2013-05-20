@@ -1,29 +1,28 @@
 #!/usr/bin/env python
 from setuptools import setup
+import smeterd
 
-from smeterd import VERSION
-from smeterd import DESC
 
 
 setup(
     name = 'smeterd',
-    version = VERSION,
+    version = smeterd.__version__,
     packages = [
         'smeterd'
     ],
     url = 'http://nrocco.github.io/',
-    author = 'Nico Di Rocco',
+    download_url = 'http://github.com/nrocco/smeterd/tags',
+    author = smeterd.__author__,
     author_email = 'dirocco.nico@gmail.com',
-    description = DESC,
+    description = smeterd.__description__,
     include_package_data = True,
     install_requires = [
         'pyserial>=2.6',
         'bottle>=0.11.6',
         'bottle-sqlite>=0.1.2',
-        'pycli_tools'
+        'pycli_tools>=1.5'
     ],
     dependency_links = [
-        'https://github.com/nrocco/pycli-tools/tarball/master#egg=pycli_tools-dev'
     ],
     entry_points = {
         'console_scripts': [
