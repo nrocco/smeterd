@@ -1,0 +1,4 @@
+include README.md LICENSE
+recursive-include views *
+recursive-exclude * __pycache__
+recursive-exclude * *.py[co]

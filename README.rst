@@ -9,12 +9,12 @@ installation
 
 It is highly recommended to use virtualenv for this.
 After having your virtualenv installed and activated run the following command to install
-the `smeterd` package directly from github (using pip).
+the `smeterd` package directly from github (using pip)::
 
     $ pip install https://github.com/nrocco/smeterd/archive/master.zip#egg=smeterd-dev
 
 
-Alternatively you can manually clone `smeterd` and run setupttools `setup.py`:
+Alternatively you can manually clone `smeterd` and run setupttools `setup.py`::
 
     $ git clone https://github.com/nrocco/smeterd.git
     $ cd smeterd
@@ -26,12 +26,12 @@ which are needed to start reading P1 packets.
 
 If you don't want to install `smeterd` as a package you can run it directly
 from the root directory of the git repository using the following command but
-are responsible for manually installing dependencies:
+are responsible for manually installing dependencies::
 
     $ python -m smeterd
 
 
-To install the required dependencies manually see `requirements.txt` run:
+To install the required dependencies manually see `requirements.txt` run::
 
     $ pip install -r requirements.txt
 
@@ -39,24 +39,24 @@ To install the required dependencies manually see `requirements.txt` run:
 usage as a cli application
 --------------------------
 
-To get an idea of the available functionality see the `help` output:
+To get an idea of the available functionality see the `help` output::
 
     $ smeterd -h
 
 
 To make `smeterd` output more verbose use the `-v` option on any of the
-following commands. You can repeat the option to increase verbosity.
+following commands. You can repeat the option to increase verbosity::
 
     $ smeterd -vvv
 
 
 To get help for a specific subcommand use the `-h` or `--help` after
-having typed the subcommand:
+having typed the subcommand::
 
     $ smeterd {subcommand} -h
 
 
-Read one packet from your meter using the following command:
+Read one packet from your meter using the following command::
 
     $ smeterd read-meter [--raw]
     Date:       2013-05-04 22:22:32.224929
@@ -66,13 +66,13 @@ Read one packet from your meter using the following command:
 
 
 If you need to use another serial port then the default `/dev/ttyUSB0` you can
-use the above command with the `--serial-port` option:
+use the above command with the `--serial-port` option::
 
     $ smeterd read-meter --serial-port /dev/ttyS0
 
 
 Currently only kwh1, kwh2 and gas usage are read. If you specify the `--raw`
-command line option you will see the raw packet from the smart meter.
+command line option you will see the raw packet from the smart meter::
 
     $ smeterd read-meter --raw
     /ISk5\2ME382-1004
@@ -98,18 +98,18 @@ command line option you will see the raw packet from the smart meter.
 
 
 You can also collect the `kwh1`, `kwh2` and `gas` data into a sqlite database
-like this:
+like this::
 
     $ smeterd read-meter --database mydata.sqlite
 
 
-Typically you run this command from `cron` every x minutes (e.g. 5 minutes):
+Typically you run this command from `cron` every x minutes (e.g. 5 minutes)::
 
     */5 * * * * /path/to/virtualenv/bin/smeterd read-meter -d meter_data.sqlite
 
 
 After having collected enough data you can get an overview of your every day
-usage by generating a daily usage report like so:
+usage by generating a daily usage report like so::
 
     $ smeterd report --database mydata.sqlite
 
@@ -127,18 +127,18 @@ If using `smeterd` as a cli application you will find that its functionality
 is quite limited. You can use the `smeterd` package as a regular python module
 so you can integrate the reading of P1 packets into your own solutions.
 
-First initiate a new SmartMeter object
+First initiate a new SmartMeter object::
 
     >>> from smeterd.meter import SmartMeter
     >>> meter = SmartMeter('/dev/ttyS0')
 
 
-Now to read one packet from the meter:
+Now to read one packet from the meter::
 
     >>> packet = meter.read_one_packet()
     >>> print packet
 
-Do not forget to close the connection to the serial port
+Do not forget to close the connection to the serial port::
 
     >>> meter.disconnect()
 
@@ -146,7 +146,7 @@ Do not forget to close the connection to the serial port
 The `SmartMeter.meter.read_one_packet()` function will return an instance of
 the `smeterd.meter.P1Packet` class.
 
-Currently `7` values are extracted from the raw P1 packets:
+Currently `7` values are extracted from the raw P1 packets::
 
     packet.date
     packet.uid
@@ -161,5 +161,3 @@ usage as a http web service
 ---------------------------
 
 TODO
-
-

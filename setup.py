@@ -15,6 +15,8 @@ setup(
     author = smeterd.__author__,
     author_email = 'dirocco.nico@gmail.com',
     description = smeterd.__description__,
+    long_description = open('README.rst').read(),
+    license = open('LICENSE').read(),
     include_package_data = True,
     install_requires = [
         'pyserial==2.6',
