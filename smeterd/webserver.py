@@ -29,28 +29,28 @@ def respond_in_plaintext(fn):
 #########################################################################
 ##
 
-@app.route('/', method='GET', apply=[respond_in_plaintext, catch_exceptions])
+@app.route('/', method='GET', apply=[respond_in_plaintext])
 def index(db):
     data = db.execute('SELECT * FROM data ORDER BY date DESC LIMIT 1').fetchone()
-    return template('active_usage', data=data)
+    return template('smeterd/views/active_usage', data=data)
 
 
-@app.route('/report', method='GET') #, apply=[catch_exceptions])
+@app.route('/report', method='GET')
 def report(db, period='daily'):
     result = storage.generate_report(db)
-    return template('daily_report', data=result)
+    return template('smeterd/views/daily_report', data=result)
 
 
-@app.route('/report/<period>', method='GET') #, apply=[catch_exceptions])
+@app.route('/report/<period>', method='GET')
 def report(db, period):
     result = storage.generate_report(db, type='day', period=period)
-    return template('daily_report', data=result)
+    return template('smeterd/views/daily_report', data=result)
 
 
-@app.route('/rrd/total.png', method='GET')
-def rrd_image():
-    response.content_type = 'image/png'
-    return open('kwh.png', 'r').read()
+# @app.route('/rrd/total.png', method='GET')
+# def rrd_image():
+#     response.content_type = 'image/png'
+#     return open('kwh.png', 'r').read()
 
 
 @app.route('/current', method='GET', apply=[respond_in_plaintext])
