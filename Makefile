@@ -90,9 +90,9 @@ bump: $(PY)
 	@echo "Version $(version) commited and tagged. You can 'make push' or 'make upload' now :)"
 
 
-# Pull everything from github
-.PHONY: pull
-pull:
+# Fetch everything from github
+.PHONY: fetch
+fetch:
 	git fetch --all
 	git fetch --tags
 
