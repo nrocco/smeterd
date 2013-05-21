@@ -29,10 +29,9 @@ def respond_in_plaintext(fn):
 #########################################################################
 ##
 
-@app.route('/', method='GET') #, apply=[catch_exceptions])
+@app.route('/', method='GET', apply=[respond_in_plaintext, catch_exceptions])
 def index(db):
-    data = db.query(storage.Data).order_by('date desc')[0]
-
+    data = db.execute('SELECT * FROM data ORDER BY date DESC LIMIT 1').fetchone()
     return template('active_usage', data=data)
 
 
