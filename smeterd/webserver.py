@@ -1,3 +1,6 @@
+from os import path
+
+import bottle
 from bottle import Bottle, response, run, jinja2_template as template
 from bottle_sqlite import SQLitePlugin
 
@@ -6,6 +9,8 @@ from smeterd import utils
 
 
 app = Bottle()
+bottle.TEMPLATE_PATH.insert(0, path.join(path.dirname(path.realpath(__file__)), 'views'))
+
 
 
 def catch_exceptions(fn):
@@ -32,19 +37,19 @@ def respond_in_plaintext(fn):
 @app.route('/', method='GET', apply=[respond_in_plaintext])
 def index(db):
     data = db.execute('SELECT * FROM data ORDER BY date DESC LIMIT 1').fetchone()
-    return template('smeterd/views/active_usage', data=data)
+    return template('active_usage', data=data)
 
 
 @app.route('/report', method='GET')
 def report(db, period='daily'):
     result = storage.generate_report(db)
-    return template('smeterd/views/daily_report', data=result)
+    return template('daily_report', data=result)
 
 
 @app.route('/report/<period>', method='GET')
 def report(db, period):
     result = storage.generate_report(db, type='day', period=period)
-    return template('smeterd/views/daily_report', data=result)
+    return template('daily_report', data=result)
 
 
 # @app.route('/rrd/total.png', method='GET')
