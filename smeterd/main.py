@@ -25,7 +25,7 @@ def read_meter(args, parser):
     from smeterd import meter
     packet = meter.read_one_packet(args.serial_port)
 
-    if args.database:
+    if args.store and args.database:
         from smeterd import storage
         db = utils.get_absolute_path(args.database)
         if not isfile(db):
@@ -104,6 +104,8 @@ def parse_and_run():
     parser_a.add_argument('-p', '--serial-port', default=DEFAULT_SERIAL,
                           metavar='/dev/ttyXXXX',
                           help='serial port to read packets from. Defaults to %s' % DEFAULT_SERIAL)
+    parser_a.add_argument('-s', '--store', action='store_true',
+                          help='write the results to the database')
     parser_a.add_argument('-r', '--raw', action='store_true',
                           help='display packet in raw form')
     add_db_arg(parser_a)
