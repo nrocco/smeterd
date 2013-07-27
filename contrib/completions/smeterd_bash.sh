@@ -12,10 +12,6 @@ _smeterd_bash_completion()
       local opts="-h --help --serial-port -p -r --raw -d --database"
       ;;
 
-    webserver)
-      local opts="-h --help -b --bind -r --auto-reload -d --database"
-      ;;
-
     report)
       local opts="-h --help -d --database"
       ;;
@@ -30,7 +26,7 @@ _smeterd_bash_completion()
       ;;
 
     *)
-      local opts="-h --help --version -v -q webserver report read-meter"
+      local opts="-h --help --version -v -q report read-meter"
       ;;
   esac
   

@@ -20,13 +20,9 @@ setup(
     include_package_data = True,
     install_requires = [
         'pyserial==2.6',
-        'bottle==0.11.6',
-        'bottle-sqlite==0.1.2',
         'pycli-tools==1.5',
-        'Jinja2==2.6'
     ],
     package_data = {
-        '': ['*.tpl']
     },
     entry_points = {
         'console_scripts': [
@@ -38,7 +34,6 @@ setup(
          'Operating System :: OS Independent',
          'Programming Language :: Python :: 2.6',
          'Programming Language :: Python :: 2.7',
-         'Topic :: Internet :: WWW/HTTP',
          'Topic :: Software Development :: Libraries :: Python Modules',
     ],
 )

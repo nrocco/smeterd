@@ -12,8 +12,6 @@ log = logging.getLogger(__name__)
 
 DEFAULT_CONFIG='/etc/defaults/smeterd.conf'
 DEFAULT_DB='smeter.sqlite'
-DEFAULT_PORT=8000
-DEFAULT_SOCKET='0.0.0.0:%s' % DEFAULT_PORT
 DEFAULT_SERIAL='/dev/ttyUSB0'
 
 
@@ -57,22 +55,6 @@ def report(args, parser):
     log.debug('Working with database %s', db)
     sql = SQL_REPORT.format(where='1', group_by='DATE(date)')
     print check_output(['sqlite3', '-header', '-column', db, sql])
-
-
-def webserver(args, parser):
-    from smeterd import webserver
-
-    db = utils.get_absolute_path(args.database)
-    if not isfile(db):
-        parser.error('No database found at path %s' % db)
-
-    parts = args.bind.split(':')
-    host = parts[0]
-    port = parts[1] if len(parts) > 1 else DEFAULT_PORT
-    debug = True if not args.quiet and args.loglevel == 10 else False
-
-    webserver.start_webserver(host, port, db, debug=debug,
-                              auto_reload=args.auto_reload)
 
 
 def rrd(args, parser):
@@ -126,17 +108,6 @@ def parse_and_run():
                           help='display packet in raw form')
     add_db_arg(parser_a)
     parser_a.set_defaults(func=read_meter)
-
-
-    # create the parser for the "webserver" command
-    parser_b = subparsers.add_parser('webserver', help='Start a webserver')
-    parser_b.add_argument('-b', '--bind', metavar='address:port',
-                          default=DEFAULT_SOCKET,
-                          help='Inet socket to bind to. Defaults to %s' % DEFAULT_SOCKET)
-    add_db_arg(parser_b)
-    parser_b.add_argument('-r', '--auto-reload',
-                          action='store_true', help='auto respawn server')
-    parser_b.set_defaults(func=webserver)
 
 
     # create the parser for the "report" command

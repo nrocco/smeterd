@@ -113,4 +113,3 @@ clean:
 	find . -name '._*' -exec rm -f {} +
 	find . -name '.coverage*' -exec rm -f {} +
 	rm -rf build/ dist/ MANIFEST docs/_build/* 2>/dev/null || true
-
