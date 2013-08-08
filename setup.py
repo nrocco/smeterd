@@ -20,13 +20,13 @@ setup(
     include_package_data = True,
     install_requires = [
         'pyserial==2.6',
-        'pycli-tools==1.5',
+        'pycli-tools==1.5.1',
     ],
     package_data = {
     },
     entry_points = {
         'console_scripts': [
-            'smeterd = smeterd.main:parse_and_run',
+            'smeterd = smeterd.command:parse_and_run',
         ]
     },
     classifiers = [

@@ -3,5 +3,5 @@ __description__ = '''Read smart meter P1 packets'''
 __author__ = 'Nico Di Rocco'
 
 if '__main__' == __name__:
-    from smeterd.main import parse_and_run
+    from smeterd.command import parse_and_run
     parse_and_run()
