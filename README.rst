@@ -9,9 +9,9 @@ installation
 
 It is highly recommended to use virtualenv for this.
 After having your virtualenv installed and activated run the following command to install
-the `smeterd` package directly from github (using pip)::
+the `smeterd` package directly from pypi (using pip)::
 
-    $ pip install https://github.com/nrocco/smeterd/archive/master.zip#egg=smeterd-dev
+    $ pip install smeterd
 
 
 Alternatively you can manually clone `smeterd` and run setupttools `setup.py`::
@@ -26,14 +26,16 @@ which are needed to start reading P1 packets.
 
 If you don't want to install `smeterd` as a package you can run it directly
 from the root directory of the git repository using the following command but
-are responsible for manually installing dependencies::
+you are responsible for manually installing dependencies::
 
     $ python -m smeterd
 
 
-To install the required dependencies manually see `requirements.txt` run::
+To install the required dependencies manually see `requirements.txt` 
+or simply run::
 
     $ pip install -r requirements.txt
+
 
 
 usage as a cli application
@@ -100,24 +102,13 @@ command line option you will see the raw packet from the smart meter::
 You can also collect the `kwh1`, `kwh2` and `gas` data into a sqlite database
 like this::
 
-    $ smeterd read-meter --database mydata.sqlite
+    $ smeterd read-meter --database mydata.sqlite --store
 
 
 Typically you run this command from `cron` every x minutes (e.g. 5 minutes)::
 
-    */5 * * * * /path/to/virtualenv/bin/smeterd read-meter -d meter_data.sqlite
+    */5 * * * * /path/to/virtualenv/bin/smeterd read-meter --database meter_data.sqlite --store
 
-
-After having collected enough data you can get an overview of your every day
-usage by generating a daily usage report like so::
-
-    $ smeterd report --database mydata.sqlite
-
-    date         total_kwh   total_gas   kwh1      kwh2       gas     
-
-    2013-04-23   0.176       0.001       300.716   165.041    685.901 
-    2013-04-24   4.871       0.813       301.697   168.943    686.714 
-    2013-04-25   3.255       0.97        302.716   171.192    687.69
 
 
 usage as a python module
@@ -155,9 +146,3 @@ Currently `7` values are extracted from the raw P1 packets::
     packet.gas
     packet.tariff
     packet.current_usage
-
-
-usage as a http web service
----------------------------
-
-TODO
