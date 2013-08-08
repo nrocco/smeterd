@@ -25,9 +25,8 @@ def read_meter(args, parser):
     packet = read_one_packet(args.serial_port)
 
     if args.store and args.database:
-        db = get_absolute_path(args.database)
-        log.info('Storing data in database %s', db)
-        store_single_packet(db, packet)
+        log.info('Storing data in database %s', args.database)
+        store_single_packet(args.database, packet)
 
     if args.raw:
         print str(packet)
