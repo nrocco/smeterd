@@ -31,10 +31,10 @@ def read_meter(args, parser):
     if args.raw:
         print str(packet)
     else:
-        print 'Date:      ', packet.date
-        print 'kWh 1:     ', packet.kwh1
-        print 'kWh 2:     ', packet.kwh2
-        print 'Gas:       ', packet.gas
+        print('Date:      %s' % packet.date)
+        print('kWh1:      %s kwh' % packet.kwh1)
+        print('kWh2:      %s kwh' % packet.kwh2)
+        print('Gas:       %s m3' % packet.gas)
 
 
 
