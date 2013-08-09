@@ -51,14 +51,27 @@ class SmartMeter(object):
 
 
     def read_one_packet(self):
-        raw = []
-        i = 20
-        log.debug('Start reading %d lines', i)
-        while i > 0:
-            raw.append(str(self.serial.readline()).strip())
-            i = i - 1
+        lines = []
+        log.info('Start reading lines')
+
+        while True:
+            line = self.serial.readline().decode('utf-8').strip()
+            log.debug('>> %s', line)
+
+            if line.startswith('/ISk5'):
+                lines = [line]
+            else:
+                lines.append(line)
+
+            if line == '!' and len(lines) > 19:
+                break
+
         log.debug('Done reading lines. Constructing P1Packet')
-        return P1Packet('\n'.join(raw))
+        return P1Packet('\n'.join(lines))
+
+
+class SmartMeterError(Exception):
+    pass
 
 
 
