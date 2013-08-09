@@ -79,12 +79,18 @@ class P1Packet(object):
     def __init__(self, data):
         self._data = data
         self.date = datetime.now()
-        self.uid = RE_UID.search(data).group(1)
-        self.kwh1 = float(RE_KWH1.search(data).group(1))
-        self.kwh2 = float(RE_KWH2.search(data).group(1))
-        self.gas = float(RE_GAS.search(data).group(1))
-        self.tariff = int(RE_TARIFF.search(data).group(1))
-        self.current_usage = float(RE_CURRENT_USAGE.search(data).group(1))
+        self.uid = self.extract(data, RE_UID, 'Cannot read UID')
+        self.kwh1 = float(self.extract(data, RE_KWH1, 'Cannot read kwh1'))
+        self.kwh2 = float(self.extract(data, RE_KWH2, 'Cannot read kwh2'))
+        self.gas = float(self.extract(data, RE_GAS, 'Cannot read gas'))
+        self.tariff = int(self.extract(data, RE_TARIFF, 'Cannot read tariff'))
+        self.current_usage = float(self.extract(data, RE_CURRENT_USAGE, 'Cannot read current usage'))
+
+    def extract(self, data, regex, error='Cannot extract data from packet'):
+        results = regex.search(data)
+        if not results:
+            raise SmartMeterError(error)
+        return results.group(1)
 
     def kwh1_asint(self):
         return int(self.kwh1 * 1000)
