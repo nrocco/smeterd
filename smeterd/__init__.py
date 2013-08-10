@@ -1,4 +1,4 @@
-__version__ = '2.1.4'
+__version__ = '2.1.5'
 __description__ = '''Read smart meter P1 packets'''
 __author__ = 'Nico Di Rocco'
 
