@@ -25,25 +25,25 @@ class SmartMeter(object):
                                     parity=serial.PARITY_EVEN,
                                     stopbits=serial.STOPBITS_ONE)
         self.serial.setRTS(False)
-        self.port = self.serial.portstr
-        log.debug('New serial connection opened to %s', self.port)
+        self.port = self.serial.name
+        log.info('New serial connection opened to %s', self.port)
 
 
     def connect(self):
         if not self.serial.isOpen():
-            log.debug('Opening connection to `%s`', self.serial.portstr)
+            log.info('Opening connection to `%s`', self.serial.name)
             self.serial.open()
             self.serial.setRTS(False)
         else:
-            log.debug('`%s` was already open.', self.serial.portstr)
+            log.debug('`%s` was already open.', self.serial.name)
 
 
     def disconnect(self):
         if self.serial.isOpen():
-            log.debug('Closing connection to `%s`.', self.serial.portstr)
+            log.info('Closing connection to `%s`.', self.serial.name)
             self.serial.close()
         else:
-            log.debug('`%s` was already closed.', self.serial.portstr)
+            log.debug('`%s` was already closed.', self.serial.name)
 
 
     def connected(self):
