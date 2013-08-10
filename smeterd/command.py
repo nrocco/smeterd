@@ -1,6 +1,7 @@
 import logging
 
 from pycli_tools.parsers import get_argparser
+from pycli_tools.actions import ExistingFileAction
 
 from smeterd import __version__
 from smeterd import __description__
@@ -38,20 +39,6 @@ def read_meter(args, parser):
 
 
 
-from argparse import Action
-from os.path import isfile, isabs, abspath
-
-
-class ExistingFile(Action):
-    def __call__(self, parser, args, values, option_string=None):
-        if not isfile(values):
-            parser.error('File `%s` does not exist' % values)
-
-        path = values if isabs(values) else abspath(values)
-        setattr(args, self.dest, path)
-
-
-
 def parse_and_run():
     # create the top-level parser
     parser = get_argparser(prog='smeterd',
@@ -70,7 +57,7 @@ def parse_and_run():
                           help='write the results to the database')
     parser_a.add_argument('--raw', action='store_true',
                           help='display packet in raw form')
-    parser_a.add_argument('--database', action=ExistingFile,
+    parser_a.add_argument('--database', action=ExistingFileAction,
                           help='sqlite database containig smeter data')
     parser_a.set_defaults(func=read_meter)
 

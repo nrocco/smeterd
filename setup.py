@@ -20,7 +20,7 @@ setup(
     include_package_data = True,
     install_requires = [
         'pyserial==2.6',
-        'pycli-tools==1.5.1',
+        'pycli-tools==1.6.0',
     ],
     package_data = {
     },
