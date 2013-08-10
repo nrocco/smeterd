@@ -57,10 +57,9 @@ def parse_and_run():
     parser = get_argparser(prog='smeterd',
                            version=__version__,
                            default_config='~/.smeterdrc',
+                           logging_format='[%(asctime)-15s] %(levelname)s %(message)s',
                            description=__description__)
     subparsers = parser.add_subparsers()
-
-    logging.basicConfig(format='%(asctime)-15s %(levelname)s %(message)s')
 
     # create the parser for the "read-meter" command
     parser_a = subparsers.add_parser('read-meter', help='Read a single P1 packet')
