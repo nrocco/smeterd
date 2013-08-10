@@ -8,15 +8,6 @@ from datetime import datetime
 log = logging.getLogger(__name__)
 
 
-RE_UID = re.compile(r'^0-0:96\.1\.1\(([^)]+)\)$', re.MULTILINE)
-RE_KWH1 = re.compile(r'^1-0:1\.8\.1\(([0-9]{5}\.[0-9]{3})\*kWh\)$', re.MULTILINE)
-RE_KWH2 = re.compile(r'^1-0:1\.8\.2\(([0-9]{5}\.[0-9]{3})\*kWh\)$', re.MULTILINE)
-RE_GAS = re.compile(r'^\(([0-9]{5}\.[0-9]{3})\)$', re.MULTILINE)
-RE_TARIFF = re.compile(r'^0-0:96\.14\.0\(([0-9]+)\)$', re.MULTILINE)
-RE_CURRENT_USAGE = re.compile(r'^1-0:1\.7\.0\(([0-9]{4}\.[0-9]{2})\*kW\)$', re.MULTILINE)
-
-
-
 class SmartMeter(object):
 
     def __init__(self, port, *args, **kwargs):
@@ -88,33 +79,57 @@ class SmartMeterError(Exception):
 
 
 class P1Packet(object):
-    def __init__(self, data):
-        self._data = data
-        self.date = datetime.now()
-        self.uid = self.extract(data, RE_UID, 'Cannot read UID')
-        self.kwh1 = float(self.extract(data, RE_KWH1, 'Cannot read kwh1'))
-        self.kwh2 = float(self.extract(data, RE_KWH2, 'Cannot read kwh2'))
-        self.gas = float(self.extract(data, RE_GAS, 'Cannot read gas'))
-        self.tariff = int(self.extract(data, RE_TARIFF, 'Cannot read tariff'))
-        self.current_usage = float(self.extract(data, RE_CURRENT_USAGE, 'Cannot read current usage'))
+    _raw = ''
 
-    def extract(self, data, regex, error='Cannot extract data from packet'):
-        results = regex.search(data)
+    def __init__(self, data):
+        if type(data) == list:
+            self._raw = '\n'.join(data)
+        else:
+            self._raw = data
+
+        self._keys = {
+            'header': self.get(r'^(/ISk5.*)$', ''),
+            'eid': self.get(r'^0-0:96\.1\.1\(([^)]+)\)$'),
+            'kwh1_in': self.get_float(r'^1-0:1\.8\.1\(([0-9]{5}\.[0-9]{3})\*kWh\)$'),
+            'kwh2_in': self.get_float(r'^1-0:1\.8\.2\(([0-9]{5}\.[0-9]{3})\*kWh\)$'),
+            'kwh1_out': self.get_float(r'^1-0:2\.8\.1\(([0-9]{5}\.[0-9]{3})\*kWh\)$'),
+            'kwh2_out': self.get_float(r'^1-0:2\.8\.2\(([0-9]{5}\.[0-9]{3})\*kWh\)$'),
+            'tariff': self.get_int(r'^0-0:96\.14\.0\(([0-9]+)\)$'),
+            'current_kwh_in': self.get_float(r'^1-0:1\.7\.0\(([0-9]{4}\.[0-9]{2})\*kW\)$'),
+            'current_kwh_out': self.get_float(r'^1-0:2\.7\.0\(([0-9]{4}\.[0-9]{2})\*kW\)$'),
+            'kwh_treshold': self.get_float(r'^0-0:17\.0\.0\(([0-9]{4}\.[0-9]{2})\*kW\)$'),
+            'switch': self.get_int(r'^0-0:96\.3\.10\((\d)\)$'),
+            'txtmsg_code': self.get(r'^0-0:96\.13\.1\((\d+)\)$'),
+            'txtmsg': self.get(r'^0-0:96\.13\.0\((.+)\)$'),
+            'device_type': self.get_int(r'^0-1:24\.1\.0\((\d)\)$'),
+            'eid_gas': self.get(r'^0-1:96\.1\.0\(([^)]+)\)$'),
+            'gas': self.get_float(r'^\(([0-9]{5}\.[0-9]{3})\)$'),
+            'valve': self.get_int(r'^0-1:24\.4\.0\((\d)\)$')
+        }
+
+    def __getitem__(self, key):
+        return self._keys[key]
+
+    def get_float(self, regex, default=None):
+        result = self.get(regex, None)
+        if not result:
+            return default
+        return float(self.get(regex, default))
+
+    def get_int(self, regex, default=None):
+        result = self.get(regex, None)
+        if not result:
+            return default
+        return int(result)
+
+    def get(self, regex, default=None):
+        results = re.search(regex, self._raw, re.MULTILINE)
         if not results:
-            raise SmartMeterError(error)
+            return default
         return results.group(1)
 
-    def kwh1_asint(self):
-        return int(self.kwh1 * 1000)
-
-    def kwh2_asint(self):
-        return int(self.kwh2 * 1000)
-
-    def gas_asint(self):
-        return int(self.gas * 1000)
-
     def __str__(self):
-        return self._data
+        return self._raw
 
 
 

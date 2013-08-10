@@ -1,5 +1,7 @@
 import logging
 
+from datetime import datetime
+
 from pycli_tools.parsers import get_argparser
 from pycli_tools.actions import ExistingFileAction
 
@@ -32,10 +34,10 @@ def read_meter(args, parser):
     if args.raw:
         print str(packet)
     else:
-        print('Date:      %s' % packet.date)
-        print('kWh1:      %s kwh' % packet.kwh1)
-        print('kWh2:      %s kwh' % packet.kwh2)
-        print('Gas:       %s m3' % packet.gas)
+        print('Date:      %s' % datetime.now())
+        print('kWh1:      %s kwh' % packet['kwh1_in'])
+        print('kWh2:      %s kwh' % packet['kwh2_in'])
+        print('Gas:       %s m3' % packet['gas'])
 
 
 

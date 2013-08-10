@@ -1,5 +1,7 @@
 import sqlite3
 
+from datetime import datetime
+
 
 
 SQL_SCHEMA= '''CREATE TABLE IF NOT EXISTS data (date TEXT UNIQUE, kwh1 INTEGER, kwh2 INTEGER, gas INTEGER);'''
@@ -21,8 +23,9 @@ def get_database(dbfile=':memory:', create=False):
 
 def store_single_packet(dbfile, packet):
     db = get_database(dbfile)
-    db.execute(SQL_INSERT_PACKET, (packet.date,
-                                   packet.kwh1_asint(),
-                                   packet.kwh2_asint(),
-                                   packet.gas_asint()))
+    kwh1 = int(packet['kwh1_in'] * 1000)
+    kwh2 = int(packet['kwh2_in'] * 1000)
+    gas = int(packet['gas'] * 1000)
+    db.execute(SQL_INSERT_PACKET,
+               (datetime.now(), kwh1, kwh2, gas))
     db.commit()
