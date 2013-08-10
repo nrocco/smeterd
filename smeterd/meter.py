@@ -74,8 +74,9 @@ class SmartMeter(object):
             finally:
                 log.debug('>> %s', line)
 
-        log.info('Done reading %d lines.' % lines_read)
-        log.debug('Constructing P1Packet')
+        log.info('Done reading one packet (containing %d lines)' % len(lines))
+        log.debug('Total lines read from serial port: %d', lines_read)
+        log.debug('Constructing P1Packet from raw data')
 
         return P1Packet('\n'.join(lines))
 
