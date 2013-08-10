@@ -52,22 +52,33 @@ class SmartMeter(object):
 
     def read_one_packet(self):
         lines = []
+        lines_read = 0
+        complete_packet = False
+
         log.info('Start reading lines')
 
-        while True:
-            line = self.serial.readline().decode('utf-8').strip()
-            log.debug('>> %s', line)
-
-            if line.startswith('/ISk5'):
-                lines = [line]
+        while not complete_packet:
+            try:
+                line = self.serial.readline().decode('utf-8').strip()
+            except:
+                log.error('Read a total of %d lines', lines_read)
+                raise
             else:
-                lines.append(line)
+                lines_read += 1
+                if line.startswith('/ISk5'):
+                    lines = [line]
+                else:
+                    lines.append(line)
+                if line == '!' and len(lines) > 19:
+                    complete_packet = True
+            finally:
+                log.debug('>> %s', line)
 
-            if line == '!' and len(lines) > 19:
-                break
+        log.info('Done reading %d lines.' % lines_read)
+        log.debug('Constructing P1Packet')
 
-        log.debug('Done reading lines. Constructing P1Packet')
         return P1Packet('\n'.join(lines))
+
 
 
 class SmartMeterError(Exception):
@@ -105,8 +116,10 @@ class P1Packet(object):
         return self._data
 
 
+
 def read_one_packet(serial_port='/dev/ttyUSB0'):
     meter = SmartMeter(serial_port)
     packet = meter.read_one_packet()
     meter.disconnect()
+
     return packet
