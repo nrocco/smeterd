@@ -2,6 +2,8 @@ import logging
 
 from datetime import datetime
 
+from serial.serialutil import SerialException
+
 from pycli_tools.parsers import get_argparser
 from pycli_tools.actions import ExistingFileAction
 
@@ -25,7 +27,10 @@ def read_meter(args, parser):
     Packets can either be printed to stdout or stored
     in a sqlite database.
     '''
-    packet = read_one_packet(args.serial_port)
+    try:
+        packet = read_one_packet(args.serial_port)
+    except SerialException as e:
+        parser.error(e)
 
     if args.store and args.database:
         log.info('Storing data in database %s', args.database)
