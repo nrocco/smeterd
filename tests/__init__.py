@@ -18,7 +18,6 @@ class SerialMock(object):
         pass
 
     def readline(self):
-        print self.lines_in_buffer
         if len(self.lines_in_buffer) > 0:
             return self.lines_in_buffer.pop(0)
         else:
