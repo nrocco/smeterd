@@ -11,12 +11,21 @@ log = logging.getLogger(__name__)
 class SmartMeter(object):
 
     def __init__(self, port, *args, **kwargs):
-        self.serial = serial.Serial(port, 9600, timeout=2,
-                                    bytesize=serial.SEVENBITS,
-                                    parity=serial.PARITY_EVEN,
-                                    stopbits=serial.STOPBITS_ONE)
-        self.serial.setRTS(False)
-        self.port = self.serial.name
+        try:
+            self.serial = serial.Serial(
+                port,
+                9600,
+                timeout=2,
+                bytesize=serial.SEVENBITS,
+                parity=serial.PARITY_EVEN,
+                stopbits=serial.STOPBITS_ONE
+            )
+        except serial.SerialException as e:
+            raise SmartMeterError(e)
+        else:
+            self.serial.setRTS(False)
+            self.port = self.serial.name
+
         log.info('New serial connection opened to %s', self.port)
 
 
@@ -49,11 +58,12 @@ class SmartMeter(object):
         log.info('Start reading lines')
 
         while not complete_packet:
+            line = ''
             try:
                 line = self.serial.readline().decode('utf-8').strip()
-            except:
+            except Exception as e:
                 log.error('Read a total of %d lines', lines_read)
-                raise
+                raise SmartMeterError(e)
             else:
                 lines_read += 1
                 if line.startswith('/ISk5'):
