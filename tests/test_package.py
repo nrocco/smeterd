@@ -31,7 +31,7 @@ def test_default_packet_as_string():
     assert p['eid_gas'] == '3238303131303031323332313337343132'
     assert p['gas'] == 947.680
     assert p['valve'] == 1
-    assert str(p) == NORMAL_PACKET
+    assert unicode(p) == NORMAL_PACKET
 
 
 def test_default_packet_as_array():
@@ -53,7 +53,7 @@ def test_default_packet_as_array():
     assert p['eid_gas'] == '3238303131303031323332313337343132'
     assert p['gas'] == 947.680
     assert p['valve'] == 1
-    assert str(p) == NORMAL_PACKET
+    assert unicode(p) == NORMAL_PACKET
 
 
 def test_BROKEN_PACKET():

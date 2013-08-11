@@ -37,7 +37,7 @@ def read_meter(args, parser):
         store_single_packet(args.database, packet)
 
     if args.raw:
-        print(str(packet))
+        print(unicode(packet))
     else:
         print('Date:      %s' % datetime.now())
         print('kWh1:      %s kwh' % packet['kwh1_in'])
