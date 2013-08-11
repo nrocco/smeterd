@@ -1,19 +1,20 @@
 smeterd
 =======
 
-Read P1 smart meter packets in Python
+Read P1 smart meter packets in Python.
 
 
 installation
 ------------
 
-It is highly recommended to use virtualenv for this.
-After having your virtualenv installed and activated run the following command to install
-the `smeterd` package directly from pypi (using pip)::
+It is highly recommended to use virtualenv for this.  After having your
+virtualenv installed and activated run the following command to install the
+`smeterd` package directly from pypi (using pip)::
 
     $ pip install smeterd
 
 
+This will install the latest stable verison from pypi.
 Alternatively you can manually clone `smeterd` and run setupttools `setup.py`::
 
     $ git clone https://github.com/nrocco/smeterd.git
@@ -21,8 +22,8 @@ Alternatively you can manually clone `smeterd` and run setupttools `setup.py`::
     $ python setup.py install
 
 
-This will install the needed python libraries (in this case only pyserial)
-which are needed to start reading P1 packets.
+This will install the needed python libraries which are needed to start reading
+P1 packets.
 
 If you don't want to install `smeterd` as a package you can run it directly
 from the root directory of the git repository using the following command but
@@ -31,7 +32,7 @@ you are responsible for manually installing dependencies::
     $ python -m smeterd
 
 
-To install the required dependencies manually see `requirements.txt` 
+To install the required dependencies manually see `requirements.txt`
 or simply run::
 
     $ pip install -r requirements.txt
