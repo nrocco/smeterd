@@ -90,7 +90,7 @@ def test_meter_read_one_packet():
     assert p['eid_gas'] == '3238303131303031323332313337343132'
     assert p['gas'] == 947.680
     assert p['valve'] == 1
-    assert unicode(p) == NORMAL_PACKET
+    assert str(p) == NORMAL_PACKET
 
 
 @raises(SmartMeterError)

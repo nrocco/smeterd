@@ -63,7 +63,7 @@ class SmartMeter(object):
                 line = self.serial.readline().decode('utf-8').strip()
             except Exception as e:
                 log.error('Read a total of %d lines', lines_read)
-                raise SmartMeterError(unicode(e))
+                raise SmartMeterError(e)
             else:
                 lines_read += 1
                 if line.startswith('/ISk5'):
@@ -140,10 +140,6 @@ class P1Packet(object):
 
     def __str__(self):
         return self._raw
-
-    def __unicode__(self):
-        return unicode(self._raw)
-
 
 
 
