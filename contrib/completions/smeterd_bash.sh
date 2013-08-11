@@ -9,24 +9,20 @@ _smeterd_bash_completion()
       ;;
 
     read-meter)
-      local opts="-h --help --serial-port -p -r --raw -d --database"
+      local opts="-h --help --serial-port --raw --database --store"
       ;;
 
-    report)
-      local opts="-h --help -d --database"
-      ;;
-
-    -d|--database)
+    --database)
       COMPREPLY=( $(compgen -o filenames -A file -- $cur) )
       return 0
       ;;
 
-    -p|--serial-port)
+    --serial-port)
       local opts="$(ls /dev/tty*)"
       ;;
 
     *)
-      local opts="-h --help --version -v -q report read-meter"
+      local opts="-h --help --version -v -q read-meter"
       ;;
   esac
   
