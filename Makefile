@@ -107,9 +107,14 @@ push: test
 # Clean all build artifacts
 .PHONY: clean
 clean:
-	find . -name '*.pyc' -exec rm -f {} +
-	find . -name '*.pyo' -exec rm -f {} +
-	find . -name '*~' -exec rm -f {} +
-	find . -name '._*' -exec rm -f {} +
-	find . -name '.coverage*' -exec rm -f {} +
+	find $(package_name) -name '*.pyc' -exec rm -f {} +
+	find $(package_name) -name '*.pyo' -exec rm -f {} +
+	find $(package_name) -name '*~' -exec rm -f {} +
+	find $(package_name) -name '._*' -exec rm -f {} +
+	find $(package_name) -name '.coverage*' -exec rm -f {} +
 	rm -rf build/ dist/ MANIFEST docs/_build/* 2>/dev/null || true
+
+
+.PHONY: tags
+tags:
+	ctags --languages=python --recurse --python-kinds=-i --exclude=.git --totals=yes $(package_name)/
