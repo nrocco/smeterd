@@ -4,7 +4,6 @@ from nose.tools import raises
 
 from smeterd.meter import SmartMeter
 from smeterd.meter import SmartMeterError
-from smeterd.meter import read_one_packet
 
 from tests import SerialMock
 from tests import NORMAL_PACKET
@@ -26,7 +25,8 @@ def test_meter_tty_not_available():
 
 @raises(SmartMeterError)
 def test_meter_tty_not_available_again():
-    p = read_one_packet()
+    meter = SmartMeter('/dev/ttyUSB0')
+    packet = meter.read_one_packet()
 
 
 def test_meter_connect_twice():

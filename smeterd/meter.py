@@ -1,7 +1,6 @@
 import re
 import logging
 import serial
-from datetime import datetime
 
 
 
@@ -141,12 +140,3 @@ class P1Packet(object):
 
     def __str__(self):
         return self._raw
-
-
-
-def read_one_packet(serial_port='/dev/ttyUSB0'):
-    meter = SmartMeter(serial_port)
-    packet = meter.read_one_packet()
-    meter.disconnect()
-
-    return packet
