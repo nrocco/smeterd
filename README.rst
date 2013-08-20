@@ -61,10 +61,22 @@ having typed the subcommand::
 Read one packet from your meter using the following command::
 
     $ smeterd read-meter [--raw]
-    Date:       2013-05-04 22:22:32.224929
-    kWh 1:      331.557
-    kWh 2:      199.339
-    Gas:        749.169
+    2013-05-04 22:22:32.224929	331557	199339	749169
+
+By default the `read-meter` commands spits out the current date, total kwh1,
+total kwh2 and total gas amounts on one line. Seperated by tabs.
+By piping the output of the `read-meter` command to a bash script you can fully
+customize what you want to do with the data::
+
+    IFS='{tab}'
+    while read date kwh1 kwh2 gas; do
+      mysql my_database -e "INSERT INTO data VALUES ('$date', $kwh1, $kwh2, $gas);"
+    done < /dev/stdin
+
+
+Typically you run this command from `cron` every x minutes (e.g. 5 minutes)::
+
+    */5 * * * * /path/to/virtualenv/bin/smeterd read-meter | save_to_mysql_script.sh
 
 
 If you need to use another serial port then the default `/dev/ttyUSB0` you can
@@ -98,16 +110,6 @@ command line option you will see the raw packet from the smart meter::
     0-1:24.4.0(1)
     !
 
-
-You can also collect the `kwh1`, `kwh2` and `gas` data into a sqlite database
-like this::
-
-    $ smeterd read-meter --database mydata.sqlite --store
-
-
-Typically you run this command from `cron` every x minutes (e.g. 5 minutes)::
-
-    */5 * * * * /path/to/virtualenv/bin/smeterd read-meter --database meter_data.sqlite --store
 
 
 
