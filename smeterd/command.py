@@ -38,10 +38,12 @@ def read_meter(args, parser):
     if args.raw:
         print(str(packet))
     else:
-        print('Date:      %s' % datetime.now())
-        print('kWh1:      %s kwh' % packet['kwh1_in'])
-        print('kWh2:      %s kwh' % packet['kwh2_in'])
-        print('Gas:       %s m3' % packet['gas'])
+        print('\t'.join([
+            str(datetime.now()),
+            str(int(packet['kwh1_in']*1000)),
+            str(int(packet['kwh2_in']*1000)),
+            str(int(packet['gas']*1000)),
+        ]))
 
 
 def add_parser_for_read_meter(subparsers):
