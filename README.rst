@@ -60,17 +60,29 @@ having typed the subcommand::
 
 Read one packet from your meter using the following command::
 
-    $ smeterd read-meter [--raw]
-    2013-05-04 22:22:32.224929	331557	199339	749169
+    $ smeterd read-meter
+    Time                      2013-08-25 10:10:45.337563
+    Total kWh High consumed   651038
+    Total kWh Low consumed    546115
+    Total gas consumed        963498
+    Current kWh tariff        1
+
 
 By default the `read-meter` commands spits out the current date, total kwh1,
-total kwh2 and total gas amounts on one line. Seperated by tabs.
-By piping the output of the `read-meter` command to a bash script you can fully
+total kwh2, total gas amounts and current kWh tariff on multiple lines.
+
+You can make it print the same values as a tab seperated list::
+
+    $ smeterd read-meter --tsv
+    2013-05-04 22:22:32.224929	331557	199339	749169	1
+
+
+By piping the output of the `read-meter --tsv` command to a bash script you can fully
 customize what you want to do with the data::
 
     IFS='{tab}'
-    while read date kwh1 kwh2 gas; do
-      mysql my_database -e "INSERT INTO data VALUES ('$date', $kwh1, $kwh2, $gas);"
+    while read date kwh1 kwh2 gas tariff; do
+      mysql my_database -e "INSERT INTO data VALUES ('$date', $kwh1, $kwh2, $gas, $tariff);"
     done < /dev/stdin
 
 
@@ -138,13 +150,3 @@ Do not forget to close the connection to the serial port::
 
 The `SmartMeter.meter.read_one_packet()` function will return an instance of
 the `smeterd.meter.P1Packet` class.
-
-Currently `7` values are extracted from the raw P1 packets::
-
-    packet.date
-    packet.uid
-    packet.kwh1
-    packet.kwh2
-    packet.gas
-    packet.tariff
-    packet.current_usage
