@@ -37,13 +37,20 @@ def read_meter(args, parser):
 
     if args.raw:
         print(str(packet))
+        return 0
+
+    data = [
+        ('Time', datetime.now()),
+        ('Total kWh High consumed', int(packet['kwh']['high']['consumed']*1000)),
+        ('Total kWh Low consumed', int(packet['kwh']['low']['consumed']*1000)),
+        ('Total gas consumed', int(packet['gas']['total']*1000)),
+        ('Current kWh tariff', packet['kwh']['tariff'])
+    ]
+
+    if args.tsv:
+        print('\t'.join(map(str, [d for k,d in data])))
     else:
-        print('\t'.join([
-            str(datetime.now()),
-            str(int(packet['kwh1_in']*1000)),
-            str(int(packet['kwh2_in']*1000)),
-            str(int(packet['gas']*1000)),
-        ]))
+        print('\n'.join(['%-25s %s' % (k,d) for k,d in data]))
 
 
 def add_parser_for_read_meter(subparsers):
@@ -53,6 +60,10 @@ def add_parser_for_read_meter(subparsers):
         '--serial-port', default=DEFAULT_SERIAL,
         metavar=DEFAULT_SERIAL,
         help='serial port to read packets from (defaults to %s)' % DEFAULT_SERIAL
+    )
+    parser.add_argument(
+        '--tsv', action='store_true',
+        help='display packet in tab seperated value form'
     )
     parser.add_argument(
         '--raw', action='store_true',
