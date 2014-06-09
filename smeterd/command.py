@@ -8,7 +8,6 @@ from pycli_tools.parsers import get_argparser
 from pycli_tools.commands import Command, arg
 
 from smeterd import __version__
-from smeterd import __description__
 
 from smeterd.meter import SmartMeter
 
@@ -67,13 +66,12 @@ class ReadMeterCommand(Command):
 
 
 
-def parse_and_run():
+def parse_and_run(args=None):
     parser = get_argparser(
         prog='smeterd',
-       version=__version__,
-       default_config='~/.smeterdrc',
-       logging_format='[%(asctime)-15s] %(levelname)s %(message)s',
-       description=__description__
+        version=__version__,
+        logging_format='[%(asctime)-15s] %(levelname)s %(message)s',
+        description='Read smart meter P1 packets'
     )
 
     parser.add_commands([

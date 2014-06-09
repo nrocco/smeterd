@@ -1,20 +1,24 @@
 #!/usr/bin/env python
+import re
 from setuptools import setup
-import smeterd
 
 
+def _version():
+    with open('smeterd/__init__.py', 'r') as the_file:
+        version = re.search(r'^__version__ ?= ?\'([0-9\.]+)\'', the_file.read()).group(1)
+    return version
 
 setup(
     name = 'smeterd',
-    version = smeterd.__version__,
+    version = _version(),
     packages = [
         'smeterd'
     ],
     url = 'http://nrocco.github.io/',
     download_url = 'http://github.com/nrocco/smeterd/tags',
-    author = smeterd.__author__,
+    author = 'Nico Di Rocco',
     author_email = 'dirocco.nico@gmail.com',
-    description = smeterd.__description__,
+    description = 'Read smart meter P1 packets',
     long_description = open('README.rst').read(),
     license = open('LICENSE').read(),
     include_package_data = True,
