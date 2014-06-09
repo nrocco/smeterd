@@ -14,7 +14,7 @@ class SmartMeter(object):
             self.serial = serial.Serial(
                 port,
                 9600,
-                timeout=2,
+                timeout=10,
                 bytesize=serial.SEVENBITS,
                 parity=serial.PARITY_EVEN,
                 stopbits=serial.STOPBITS_ONE
