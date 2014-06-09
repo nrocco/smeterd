@@ -86,7 +86,7 @@ bump: $(PY)
 	rm -f $(init_py_file).bak
 	git add $(init_py_file)
 	git commit -m 'Bumped version number to $(version)'
-	git tag -m 'Mark stable release version $(version)' -a $(version)
+	git tag $(version)
 	@echo "Version $(version) commited and tagged. You can 'make push' or 'make upload' now :)"
 
 
