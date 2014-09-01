@@ -13,7 +13,7 @@ class SmartMeter(object):
         try:
             self.serial = serial.Serial(
                 port,
-                9600,
+                kwargs.get('baudrate', 9600),
                 timeout=10,
                 bytesize=serial.SEVENBITS,
                 parity=serial.PARITY_EVEN,
