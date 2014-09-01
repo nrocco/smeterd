@@ -106,13 +106,13 @@ class P1Packet(object):
         keys['kwh']['switch'] = self.get_int(r'^0-0:96\.3\.10\((\d)\)$')
         keys['kwh']['treshold'] = self.get_float(r'^0-0:17\.0\.0\(([0-9]{4}\.[0-9]{2})\*kW\)$')
 
-        keys['kwh']['high'] = {}
-        keys['kwh']['high']['consumed'] = self.get_float(r'^1-0:1\.8\.1\(([0-9]{5}\.[0-9]{3})\*kWh\)$')
-        keys['kwh']['high']['produced'] = self.get_float(r'^1-0:2\.8\.1\(([0-9]{5}\.[0-9]{3})\*kWh\)$')
-
         keys['kwh']['low'] = {}
-        keys['kwh']['low']['consumed'] = self.get_float(r'^1-0:1\.8\.2\(([0-9]{5}\.[0-9]{3})\*kWh\)$')
-        keys['kwh']['low']['produced'] = self.get_float(r'^1-0:2\.8\.2\(([0-9]{5}\.[0-9]{3})\*kWh\)$')
+        keys['kwh']['low']['consumed'] = self.get_float(r'^1-0:1\.8\.1\(([0-9]{5}\.[0-9]{3})\*kWh\)$')
+        keys['kwh']['low']['produced'] = self.get_float(r'^1-0:2\.8\.1\(([0-9]{5}\.[0-9]{3})\*kWh\)$')
+
+        keys['kwh']['high'] = {}
+        keys['kwh']['high']['consumed'] = self.get_float(r'^1-0:1\.8\.2\(([0-9]{5}\.[0-9]{3})\*kWh\)$')
+        keys['kwh']['high']['produced'] = self.get_float(r'^1-0:2\.8\.2\(([0-9]{5}\.[0-9]{3})\*kWh\)$')
 
         keys['kwh']['current_consumed'] = self.get_float(r'^1-0:1\.7\.0\(([0-9]{4}\.[0-9]{2})\*kW\)$')
         keys['kwh']['current_produced'] = self.get_float(r'^1-0:2\.7\.0\(([0-9]{4}\.[0-9]{2})\*kW\)$')

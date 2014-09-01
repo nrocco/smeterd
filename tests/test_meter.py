@@ -75,10 +75,10 @@ def test_meter_read_one_packet():
     p = meter.read_one_packet()
     assert p['header'] == '/ISk5\2ME382-1004'
     assert p['kwh']['eid'] == '4B414C37303035313135383130323132'
-    assert p['kwh']['high']['consumed'] == 608.400
-    assert p['kwh']['low']['consumed'] == 490.342
-    assert p['kwh']['high']['produced'] == 0.001
-    assert p['kwh']['low']['produced'] == 0
+    assert p['kwh']['low']['consumed'] == 608.400
+    assert p['kwh']['high']['consumed'] == 490.342
+    assert p['kwh']['low']['produced'] == 0.001
+    assert p['kwh']['high']['produced'] == 0
     assert p['kwh']['tariff'] == 1
     assert p['kwh']['current_consumed'] == 1.51
     assert p['kwh']['current_produced'] == 0
