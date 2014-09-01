@@ -1,0 +1,5 @@
+--recurse
+--totals=yes
+--exclude=.git
+--exclude=.svn
+--python-kinds=-i
