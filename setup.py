@@ -26,13 +26,13 @@ setup(
     author_email = 'dirocco.nico@gmail.com',
     url = 'http://nrocco.github.io/',
     license = 'GPLv3',
-    long_description = open('README.rst').read(),
+    long_description = codecs.open('README.rst', 'rb', 'utf-8').read(),
     test_suite='nose.collector',
     download_url = 'http://github.com/nrocco/smeterd/tags',
     include_package_data = True,
     install_requires = [
         'pyserial==2.6',
-        'pycli-tools>=1.6.0',
+        'pycli-tools>=2.0.1',
     ],
     tests_require = [
         'nose',
