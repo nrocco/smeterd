@@ -1,33 +1,47 @@
 #!/usr/bin/env python
 import re
+import codecs
+
 from setuptools import setup
+from setuptools.command.test import test as TestCommand
 
 
-def _version():
-    with open('smeterd/__init__.py', 'r') as the_file:
-        version = re.search(r'^__version__ ?= ?\'([0-9\.]+)\'', the_file.read()).group(1)
-    return version
+class NoseTestCommand(TestCommand):
+    def finalize_options(self):
+        TestCommand.finalize_options(self)
+        self.test_args = []
+        self.test_suite = True
+
+    def run_tests(self):
+        # Run nose ensuring that argv simulates running nosetests directly
+        import nose
+        nose.run_exit(argv=['nosetests'])
+
 
 setup(
     name = 'smeterd',
-    version = _version(),
-    packages = [
-        'smeterd'
-    ],
-    url = 'http://nrocco.github.io/',
-    download_url = 'http://github.com/nrocco/smeterd/tags',
+    description = 'Read smart meter P1 packets',
+    version = re.search(r'''^__version__\s*=\s*["'](.*)["']''', open('smeterd/__init__.py').read(), re.M).group(1),
     author = 'Nico Di Rocco',
     author_email = 'dirocco.nico@gmail.com',
-    description = 'Read smart meter P1 packets',
+    url = 'http://nrocco.github.io/',
+    license = 'GPLv3',
     long_description = open('README.rst').read(),
-    license = open('LICENSE').read(),
+    test_suite='nose.collector',
+    download_url = 'http://github.com/nrocco/smeterd/tags',
     include_package_data = True,
     install_requires = [
         'pyserial==2.6',
         'pycli-tools>=1.6.0',
     ],
-    package_data = {
-    },
+    tests_require = [
+        'nose',
+        'mock',
+        'coverage',
+    ],
+    packages = [
+        'smeterd'
+    ],
     entry_points = {
         'console_scripts': [
             'smeterd = smeterd.command:parse_and_run',
@@ -35,9 +49,21 @@ setup(
     },
     classifiers = [
         'Development Status :: 5 - Production/Stable',
-         'Operating System :: OS Independent',
-         'Programming Language :: Python :: 2.6',
-         'Programming Language :: Python :: 2.7',
+        'Environment :: Console',
+        'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
+        'Operating System :: Unix',
+        'Programming Language :: Python',
+        'Programming Language :: Python :: 2',
+        'Programming Language :: Python :: 2.6',
+        'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.2',
+        'Programming Language :: Python :: 3.3',
+        'Programming Language :: Python :: 3.4',
          'Topic :: Software Development :: Libraries :: Python Modules',
+        'Topic :: Utilities'
     ],
+    cmdclass = {
+        'test': NoseTestCommand
+    }
 )

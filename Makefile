@@ -2,7 +2,6 @@ VIRTUAL_ENV ?= $(PWD)/env
 
 PY = $(VIRTUAL_ENV)/bin/python
 PIP = $(VIRTUAL_ENV)/bin/pip
-NOSE = $(VIRTUAL_ENV)/bin/nosetests
 COVERAGE = $(VIRTUAL_ENV)/bin/coverage
 SPHINXBUILD = $(VIRTUAL_ENV)/bin/sphinx-build
 
@@ -19,15 +18,6 @@ $(PY):
 # Install sphinx to generate documentation
 $(SPHINXBUILD): $(PY)
 	$(PIP) install sphinx
-
-# Install dependencies need for testing
-$(NOSE): $(PY)
-	$(PIP) install nose
-
-# Install the coverage module
-$(COVERAGE): $(PY)
-	$(PIP) install coverage
-
 
 # Build the source tarball
 .PHONY: build
@@ -67,13 +57,8 @@ deps: $(PY)
 
 # run all tests with nosetests
 .PHONY: test
-test: $(PY) deps $(NOSE)
-	$(NOSE)
-
-
-.PHONY: coverage
-coverage: $(PY) deps $(NOSE) $(COVERAGE)
-	$(NOSE) --with-coverage --cover-package=$(package_name)
+test: $(PY) deps
+	$(PY) setup.py test
 
 
 # bump the version number
