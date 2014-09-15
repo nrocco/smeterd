@@ -11,8 +11,8 @@ $(PY):
 	$(eval VIRTUAL_ENV = $(PWD)/env)
 
 
-build: $(PY)
-	$(PY) setup.py test sdist
+build: $(PY) test
+	$(PY) setup.py sdist
 
 
 develop: $(PY)
@@ -49,8 +49,8 @@ clean:
 	rm -rf build/ dist/ MANIFEST 2>/dev/null || true
 
 
-upload: $(PY)
-	$(PY) setup.py test sdist register upload
+upload: $(PY) test
+	$(PY) setup.py sdist register upload
 
 
 .PHONY: build develop deps test bump clean upload
