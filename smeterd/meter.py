@@ -19,7 +19,7 @@ class SmartMeter(object):
                 parity=serial.PARITY_EVEN,
                 stopbits=serial.STOPBITS_ONE
             )
-        except serial.SerialException as e:
+        except (serial.SerialException,OSError) as e:
             raise SmartMeterError(e)
         else:
             self.serial.setRTS(False)

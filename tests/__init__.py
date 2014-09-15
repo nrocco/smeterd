@@ -22,11 +22,11 @@ class SerialMock(object):
             return self.lines_in_buffer.pop(0)
         else:
             raise Exception('empty buffer')
-            return b''
+            return ''
 
 
 
-NORMAL_PACKET = b'''/ISk5\2ME382-1004
+NORMAL_PACKET = '''/ISk5\2ME382-1004
 
 0-0:96.1.1(4B414C37303035313135383130323132)
 1-0:1.8.1(00608.400*kWh)
@@ -47,7 +47,7 @@ NORMAL_PACKET = b'''/ISk5\2ME382-1004
 0-1:24.4.0(1)
 !'''
 
-BROKEN_PACKET = b'''1-0:1.7.0(0001.51*kW)
+BROKEN_PACKET = '''1-0:1.7.0(0001.51*kW)
 1-0:2.7.0(0000.00*kW)
 0-0:17.0.0(0999.00*kW)
 0-0:96.3.10(1)

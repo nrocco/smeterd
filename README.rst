@@ -7,6 +7,8 @@ Read P1 smart meter packets in Python
 installation
 ------------
 
+`smeterd` is fully python 2.7 and python 3.4 compatible.
+
 It is highly recommended to use virtualenv for this.
 After having your virtualenv installed and activated run the following command to install
 the `smeterd` package directly from pypi (using pip)::

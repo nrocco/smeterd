@@ -31,7 +31,7 @@ setup(
     download_url = 'http://github.com/nrocco/smeterd/tags',
     include_package_data = True,
     install_requires = [
-        'pyserial==2.6',
+        'pyserial>=2.7',
         'pycli-tools>=2.0.1',
     ],
     tests_require = [
