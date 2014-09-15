@@ -1,6 +1,9 @@
 smeterd
 =======
 
+.. image:: https://travis-ci.org/nrocco/smeterd.svg?branch=master
+    :target: https://travis-ci.org/nrocco/smeterd
+
 Read P1 smart meter packets in Python
 
 
