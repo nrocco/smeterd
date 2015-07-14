@@ -59,18 +59,18 @@ class SmartMeter(object):
         while not complete_packet:
             line = ''
             try:
-                line = self.serial.readline().strip()
+		line = self.serial.readline().strip()
             except Exception as e:
                 log.error(e)
                 log.error('Read a total of %d lines', lines_read)
                 raise SmartMeterError(e)
             else:
-                lines_read += 1
-                if line.startswith('/ISk5'):
-                    lines = [line]
+		lines_read += 1
+                if line.startswith('/'):
+		    lines = [line]
                 else:
-                    lines.append(line)
-                if line == '!' and len(lines) > 19:
+		    lines.append(line)
+                if line.startswith('!'):
                     complete_packet = True
             finally:
                 log.debug('>> %s', line)
@@ -107,20 +107,20 @@ class P1Packet(object):
         keys['kwh']['treshold'] = self.get_float(r'^0-0:17\.0\.0\(([0-9]{4}\.[0-9]{2})\*kW\)$')
 
         keys['kwh']['low'] = {}
-        keys['kwh']['low']['consumed'] = self.get_float(r'^1-0:1\.8\.1\(([0-9]{5}\.[0-9]{3})\*kWh\)$')
-        keys['kwh']['low']['produced'] = self.get_float(r'^1-0:2\.8\.1\(([0-9]{5}\.[0-9]{3})\*kWh\)$')
+        keys['kwh']['low']['consumed'] = self.get_float(r'^1-0:1\.8\.1\(([0-9]+\.[0-9]+)\*kWh\)$')
+        keys['kwh']['low']['produced'] = self.get_float(r'^1-0:2\.8\.1\(([0-9]+\.[0-9]+)\*kWh\)$')
 
         keys['kwh']['high'] = {}
-        keys['kwh']['high']['consumed'] = self.get_float(r'^1-0:1\.8\.2\(([0-9]{5}\.[0-9]{3})\*kWh\)$')
-        keys['kwh']['high']['produced'] = self.get_float(r'^1-0:2\.8\.2\(([0-9]{5}\.[0-9]{3})\*kWh\)$')
+        keys['kwh']['high']['consumed'] = self.get_float(r'^1-0:1\.8\.2\(([0-9]+\.[0-9]+)\*kWh\)$')
+        keys['kwh']['high']['produced'] = self.get_float(r'^1-0:2\.8\.2\(([0-9]+\.[0-9]+)\*kWh\)$')
 
-        keys['kwh']['current_consumed'] = self.get_float(r'^1-0:1\.7\.0\(([0-9]{4}\.[0-9]{2})\*kW\)$')
-        keys['kwh']['current_produced'] = self.get_float(r'^1-0:2\.7\.0\(([0-9]{4}\.[0-9]{2})\*kW\)$')
+        keys['kwh']['current_consumed'] = self.get_float(r'^1-0:1\.7\.0\(([0-9]+\.[0-9]+)\*kW\)$')
+        keys['kwh']['current_produced'] = self.get_float(r'^1-0:2\.7\.0\(([0-9]+\.[0-9]+)\*kW\)$')
 
         keys['gas'] = {}
         keys['gas']['eid'] = self.get(r'^0-1:96\.1\.0\(([^)]+)\)$')
         keys['gas']['device_type'] = self.get_int(r'^0-1:24\.1\.0\((\d)\)$')
-        keys['gas']['total'] = self.get_float(r'^\(([0-9]{5}\.[0-9]{3})\)$')
+        keys['gas']['total'] = self.get_float(r'^\(([0-9]{5}\.[0-9]{3})\)$', 0)
         keys['gas']['valve'] = self.get_int(r'^0-1:24\.4\.0\((\d)\)$')
 
         keys['msg'] = {}
