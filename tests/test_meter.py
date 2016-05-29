@@ -8,8 +8,8 @@ from smeterd.meter import SmartMeterError
 from tests import SerialMock
 from tests import NORMAL_PACKET
 from tests import BROKEN_PACKET
-
-
+from tests import LONG_BROKEN_PACKET
+from tests import NORMAL_PACKET_1003
 
 Serial = serial.Serial
 
@@ -93,9 +93,39 @@ def test_meter_read_one_packet():
     assert str(p) == NORMAL_PACKET
 
 
+def test_meter_read_one_packet_1003():
+    serial.Serial = SerialMock
+    meter = SmartMeter('/dev/ttyUSB0')
+    meter.serial.lines_in_buffer = NORMAL_PACKET_1003.split('\n')
+
+    p = meter.read_one_packet()
+    assert p['header'] == '/ISk5\2ME382-1003'
+    assert p['kwh']['eid'] == '5A424556303035303933313937373132'
+    assert p['kwh']['low']['consumed'] == 608.400
+    assert p['kwh']['high']['consumed'] == 490.342
+    assert p['kwh']['low']['produced'] == 0.001
+    assert p['kwh']['high']['produced'] == 0
+    assert p['kwh']['tariff'] == 1
+    assert p['kwh']['current_consumed'] == 1.51
+    assert p['kwh']['current_produced'] == 0
+    assert p['kwh']['treshold'] == 999
+    assert p['kwh']['switch'] == 1
+    assert p['msg']['code'] == None
+    assert p['msg']['text'] == None
+    assert str(p) == NORMAL_PACKET_1003
+
+
 @raises(SmartMeterError)
 def test_meter_read_broken_packet():
     serial.Serial = SerialMock
     meter = SmartMeter('/dev/ttyUSB0')
     meter.serial.lines_in_buffer = BROKEN_PACKET.split('\n')
     meter.read_one_packet()
+    
+
+@raises(SmartMeterError)
+def test_meter_read_long_broken_packet():
+    serial.Serial = SerialMock
+    meter = SmartMeter('/dev/ttyUSB0')
+    meter.serial.lines_in_buffer = LONG_BROKEN_PACKET.split('\n')
+    meter.read_one_packet()    
