@@ -53,13 +53,14 @@ class SmartMeter(object):
         lines = []
         lines_read = 0
         complete_packet = False
+        max_lines = 19
 
         log.info('Start reading lines')
 
         while not complete_packet:
             line = ''
             try:
-                line = self.serial.readline().strip()
+                line = self.serial.readline().strip().decode('utf-8')
             except Exception as e:
                 log.error(e)
                 log.error('Read a total of %d lines', lines_read)
@@ -67,11 +68,15 @@ class SmartMeter(object):
             else:
                 lines_read += 1
                 if line.startswith('/ISk5'):
+                    if line.endswith('2MT382-1003'):
+                        max_lines = 13
                     lines = [line]
                 else:
                     lines.append(line)
-                if line == '!' and len(lines) > 19:
+                if line == '!' and len(lines) > max_lines:
                     complete_packet = True
+                if len(lines) > max_lines * 2 + 2:
+                    raise SmartMeterError('Received %d lines, we seem to be stuck in a loop, quitting.' % len(lines))
             finally:
                 log.debug('>> %s', line)
 
