@@ -68,7 +68,7 @@ class SmartMeter(object):
             else:
                 lines_read += 1
                 if line.startswith('/ISk5'):
-                    if line.endswith('2MT382-1003'):
+                    if line.endswith('1003'):
                         max_lines = 13
                     lines = [line]
                 else:
