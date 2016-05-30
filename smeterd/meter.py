@@ -60,7 +60,9 @@ class SmartMeter(object):
         while not complete_packet:
             line = ''
             try:
-                line = self.serial.readline().strip().decode('utf-8')
+                line = self.serial.readline().strip()
+                if not isinstance(line, str):
+                    line = line.decode('utf-8')
             except Exception as e:
                 log.error(e)
                 log.error('Read a total of %d lines', lines_read)
