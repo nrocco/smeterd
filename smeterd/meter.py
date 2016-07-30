@@ -59,17 +59,17 @@ class SmartMeter(object):
         while not complete_packet:
             line = ''
             try:
-		line = self.serial.readline().strip()
+                line = self.serial.readline().strip()
             except Exception as e:
                 log.error(e)
                 log.error('Read a total of %d lines', lines_read)
                 raise SmartMeterError(e)
             else:
-		lines_read += 1
+                lines_read += 1
                 if line.startswith('/'):
-		    lines = [line]
+                    lines = [line]
                 else:
-		    lines.append(line)
+                    lines.append(line)
                 if line.startswith('!'):
                     complete_packet = True
             finally:
