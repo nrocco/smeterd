@@ -50,7 +50,6 @@ def test_default_packet_as_array():
     assert p['msg']['code'] == None
     assert p['msg']['text'] == None
     assert p['gas']['device_type'] == 3
-    print(p['gas']['total'])
     assert p['gas']['eid'] == '3238303131303031323332313337343132'
     assert p['gas']['total'] == 947.680
     assert p['gas']['valve'] == 1
