@@ -105,7 +105,7 @@ class P1Packet(object):
             self._raw = data
 
         keys = {}
-        keys['header'] = self.get(r'^(/ISk5.*)$', '')
+        keys['header'] = self.get(r'^(/.*)$', '')
 
         keys['kwh'] = {}
         keys['kwh']['eid'] = self.get(r'^0-0:96\.1\.1\(([^)]+)\)$')
@@ -126,7 +126,7 @@ class P1Packet(object):
 
         keys['gas'] = {}
         keys['gas']['eid'] = self.get(r'^0-1:96\.1\.0\(([^)]+)\)$')
-        keys['gas']['device_type'] = self.get_int(r'^0-1:24\.1\.0\((\d)\)$')
+        keys['gas']['device_type'] = self.get_int(r'^0-1:24\.1\.0\((\d)+\)$')
         keys['gas']['total'] = self.get_float(r'^(?:0-1:24\.2\.1(?:\(\d+S\))?)?\(([0-9]{5}\.[0-9]{3})(?:\*m3)?\)$', 0)
         keys['gas']['valve'] = self.get_int(r'^0-1:24\.4\.0\((\d)\)$')
 
