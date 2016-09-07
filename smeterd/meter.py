@@ -75,7 +75,7 @@ class SmartMeter(object):
                     lines = [line]
                 else:
                     lines.append(line)
-                if line == '!' and len(lines) > max_lines:
+                if line.startswith('!') and len(lines) > max_lines:
                     complete_packet = True
                 if len(lines) > max_lines * 2 + 2:
                     raise SmartMeterError('Received %d lines, we seem to be stuck in a loop, quitting.' % len(lines))
