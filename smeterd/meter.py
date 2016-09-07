@@ -53,7 +53,7 @@ class SmartMeter(object):
         lines = []
         lines_read = 0
         complete_packet = False
-        max_lines = 19
+        max_lines = 35 #largest known telegram has 35 lines
 
         log.info('Start reading lines')
 
