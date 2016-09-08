@@ -53,7 +53,7 @@ class SmartMeter(object):
         lines = []
         lines_read = 0
         complete_packet = False
-        max_lines = 19
+        max_lines = 35 #largest known telegram has 35 lines
 
         log.info('Start reading lines')
 
@@ -72,10 +72,12 @@ class SmartMeter(object):
                 if line.startswith('/ISk5'):
                     if line.endswith('1003'):
                         max_lines = 13
+                    if line.endswith('1004'):
+                        max_lines = 19
                     lines = [line]
                 else:
                     lines.append(line)
-                if line == '!' and len(lines) > max_lines:
+                if line.startswith('!') and len(lines) > max_lines:
                     complete_packet = True
                 if len(lines) > max_lines * 2 + 2:
                     raise SmartMeterError('Received %d lines, we seem to be stuck in a loop, quitting.' % len(lines))
@@ -105,7 +107,7 @@ class P1Packet(object):
             self._raw = data
 
         keys = {}
-        keys['header'] = self.get(r'^(/ISk5.*)$', '')
+        keys['header'] = self.get(r'^(/.*)$', '')
 
         keys['kwh'] = {}
         keys['kwh']['eid'] = self.get(r'^0-0:96\.1\.1\(([^)]+)\)$')
@@ -126,8 +128,8 @@ class P1Packet(object):
 
         keys['gas'] = {}
         keys['gas']['eid'] = self.get(r'^0-1:96\.1\.0\(([^)]+)\)$')
-        keys['gas']['device_type'] = self.get_int(r'^0-1:24\.1\.0\((\d)\)$')
-        keys['gas']['total'] = self.get_float(r'^\(([0-9]{5}\.[0-9]{3})\)$', 0)
+        keys['gas']['device_type'] = self.get_int(r'^0-1:24\.1\.0\((\d)+\)$')
+        keys['gas']['total'] = self.get_float(r'^(?:0-1:24\.2\.1(?:\(\d+S\))?)?\(([0-9]{5}\.[0-9]{3})(?:\*m3)?\)$', 0)
         keys['gas']['valve'] = self.get_int(r'^0-1:24\.4\.0\((\d)\)$')
 
         keys['msg'] = {}

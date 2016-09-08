@@ -25,3 +25,5 @@ parts
 pip-log.txt
 sdist
 tags
+.vs/
+.eggs/
