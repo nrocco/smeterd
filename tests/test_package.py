@@ -12,6 +12,7 @@ from tests import NORMAL_PACKET_KAIFA1
 from tests import NORMAL_PACKET_KAIFA2
 from tests import NORMAL_PACKET_KAIFA3
 
+
 def test_default_packet_as_string():
     p = P1Packet(NORMAL_PACKET)
     assert p['header'] == '/ISk5\2ME382-1004'
@@ -98,6 +99,7 @@ def test_normal_packet_kaifa1_as_string():
     assert p['gas']['valve'] == None
     assert str(p) == NORMAL_PACKET_KAIFA1
 
+
 def test_normal_packet_kaifa2_as_string():
     p = P1Packet(NORMAL_PACKET_KAIFA2)
     assert p['header'] == '/XMX5LGBBFFB231158062'
@@ -118,6 +120,7 @@ def test_normal_packet_kaifa2_as_string():
     assert p['gas']['total'] == 5290.211
     assert p['gas']['valve'] == None
     assert str(p) == NORMAL_PACKET_KAIFA2
+
 
 def test_normal_packet_kaifa3_as_string():
     p = P1Packet(NORMAL_PACKET_KAIFA3)

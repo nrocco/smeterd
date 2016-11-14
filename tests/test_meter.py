@@ -121,11 +121,11 @@ def test_meter_read_broken_packet():
     meter = SmartMeter('/dev/ttyUSB0')
     meter.serial.lines_in_buffer = BROKEN_PACKET.split('\n')
     meter.read_one_packet()
-    
+
 
 @raises(SmartMeterError)
 def test_meter_read_long_broken_packet():
     serial.Serial = SerialMock
     meter = SmartMeter('/dev/ttyUSB0')
     meter.serial.lines_in_buffer = LONG_BROKEN_PACKET.split('\n')
-    meter.read_one_packet()    
+    meter.read_one_packet()
