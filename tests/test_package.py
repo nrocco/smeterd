@@ -10,11 +10,13 @@ from tests import NORMAL_PACKET
 from tests import BROKEN_PACKET
 from tests import NORMAL_PACKET_KAIFA1
 from tests import NORMAL_PACKET_KAIFA2
+from tests import NORMAL_PACKET_KAIFA3
+
 
 def test_default_packet_as_string():
     p = P1Packet(NORMAL_PACKET)
     assert p['header'] == '/ISk5\2ME382-1004'
-    assert p['kwh']['eid'] == '4B414C37303035313135383130323132'
+    assert p['kwh']['eid'] == 'XXXXXXXXXXXXXXMYSERIALXXXXXXXXXXXXXX'
     assert p['kwh']['low']['consumed'] == 608.400
     assert p['kwh']['high']['consumed'] == 490.342
     assert p['kwh']['low']['produced'] == 0.001
@@ -36,7 +38,7 @@ def test_default_packet_as_string():
 def test_default_packet_as_array():
     p = P1Packet(NORMAL_PACKET.split('\n'))
     assert p['header'] == '/ISk5\2ME382-1004'
-    assert p['kwh']['eid'] == '4B414C37303035313135383130323132'
+    assert p['kwh']['eid'] == 'XXXXXXXXXXXXXXMYSERIALXXXXXXXXXXXXXX'
     assert p['kwh']['low']['consumed'] == 608.400
     assert p['kwh']['high']['consumed'] == 490.342
     assert p['kwh']['low']['produced'] == 0.001
@@ -97,6 +99,7 @@ def test_normal_packet_kaifa1_as_string():
     assert p['gas']['valve'] == None
     assert str(p) == NORMAL_PACKET_KAIFA1
 
+
 def test_normal_packet_kaifa2_as_string():
     p = P1Packet(NORMAL_PACKET_KAIFA2)
     assert p['header'] == '/XMX5LGBBFFB231158062'
@@ -117,3 +120,25 @@ def test_normal_packet_kaifa2_as_string():
     assert p['gas']['total'] == 5290.211
     assert p['gas']['valve'] == None
     assert str(p) == NORMAL_PACKET_KAIFA2
+
+
+def test_normal_packet_kaifa3_as_string():
+    p = P1Packet(NORMAL_PACKET_KAIFA3)
+    assert p['header'] == '/KFM5KAIFA-METER'
+    assert p['kwh']['eid'] == 'XXXXXXXXSERIALXXXXXXXXXXX'
+    assert p['kwh']['low']['consumed'] == 608.303
+    assert p['kwh']['high']['consumed'] == 598.271
+    assert p['kwh']['low']['produced'] == 0
+    assert p['kwh']['high']['produced'] == 0
+    assert p['kwh']['tariff'] == 1
+    assert p['kwh']['current_consumed'] == 1.263
+    assert p['kwh']['current_produced'] == 0
+    assert p['kwh']['treshold'] == None
+    assert p['kwh']['switch'] == None
+    assert p['msg']['code'] == None
+    assert p['msg']['text'] == None
+    assert p['gas']['device_type'] == 3
+    assert p['gas']['eid'] == '4730303332353631323639323539363136'
+    assert p['gas']['total'] == 230.576
+    assert p['gas']['valve'] == None
+    assert str(p) == NORMAL_PACKET_KAIFA3
