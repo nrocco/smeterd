@@ -69,14 +69,14 @@ class SmartMeter(object):
                 raise SmartMeterError(e)
             else:
                 lines_read += 1
-		if line.startswith('/'):
-		    startFound = True;
-		    lines = [line];
+                if line.startswith('/'):
+                    startFound = True;
+                    lines = [line];
                 else:
                     lines.append(line)
                 if line.startswith('!') and startFound:
                     complete_packet = True
-		    startFound = False;
+                    startFound = False;
                 if len(lines) > max_lines * 2 + 2:
                     raise SmartMeterError('Received %d lines, we seem to be stuck in a loop, quitting.' % len(lines))
             finally:
