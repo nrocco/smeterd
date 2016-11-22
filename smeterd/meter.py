@@ -53,6 +53,7 @@ class SmartMeter(object):
         lines = []
         lines_read = 0
         complete_packet = False
+        startFound = False
         max_lines = 35 #largest known telegram has 35 lines
 
         log.info('Start reading lines')
@@ -69,16 +70,14 @@ class SmartMeter(object):
                 raise SmartMeterError(e)
             else:
                 lines_read += 1
-                if line.startswith('/ISk5'):
-                    if line.endswith('1003'):
-                        max_lines = 13
-                    if line.endswith('1004'):
-                        max_lines = 19
-                    lines = [line]
+                if line.startswith('/'):
+                    startFound = True;
+                    lines = [line];
                 else:
                     lines.append(line)
-                if line.startswith('!') and len(lines) > max_lines:
+                if line.startswith('!') and startFound:
                     complete_packet = True
+                    startFound = False;
                 if len(lines) > max_lines * 2 + 2:
                     raise SmartMeterError('Received %d lines, we seem to be stuck in a loop, quitting.' % len(lines))
             finally:
