@@ -177,7 +177,7 @@ class P1Packet(object):
             calculated_checksum = crc16(packet)
 
             if given_checksum != calculated_checksum:
-                print('given={}, calculated={}'.format(given_checksum, calculated_checksum))
+                log.error('Checksum mismatch: given={}, calculated={}'.format(given_checksum, calculated_checksum))
                 raise P1PacketError('P1Packet with invalid checksum found')
 
 
