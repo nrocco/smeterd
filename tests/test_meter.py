@@ -70,7 +70,7 @@ def test_meter_ok():
 def test_meter_read_one_packet():
     serial.Serial = SerialMock
     meter = SmartMeter('/dev/ttyUSB0')
-    meter.serial.lines_in_buffer = NORMAL_PACKET.split('\n')
+    meter.serial.lines_in_buffer = NORMAL_PACKET.splitlines(True)
 
     p = meter.read_one_packet()
     assert p['header'] == '/ISk5\2ME382-1004'
@@ -90,13 +90,13 @@ def test_meter_read_one_packet():
     assert p['gas']['eid'] == '3238303131303031323332313337343132'
     assert p['gas']['total'] == 947.680
     assert p['gas']['valve'] == 1
-    assert str(p) == NORMAL_PACKET
+    assert p._raw == NORMAL_PACKET
 
 
 def test_meter_read_one_packet_1003():
     serial.Serial = SerialMock
     meter = SmartMeter('/dev/ttyUSB0')
-    meter.serial.lines_in_buffer = NORMAL_PACKET_1003.split('\n')
+    meter.serial.lines_in_buffer = NORMAL_PACKET_1003.splitlines(True)
 
     p = meter.read_one_packet()
     assert p['header'] == '/ISk5\2ME382-1003'
@@ -112,14 +112,14 @@ def test_meter_read_one_packet_1003():
     assert p['kwh']['switch'] == 1
     assert p['msg']['code'] == None
     assert p['msg']['text'] == None
-    assert str(p) == NORMAL_PACKET_1003
+    assert p._raw == NORMAL_PACKET_1003
 
 
 @raises(SmartMeterError)
 def test_meter_read_broken_packet():
     serial.Serial = SerialMock
     meter = SmartMeter('/dev/ttyUSB0')
-    meter.serial.lines_in_buffer = BROKEN_PACKET.split('\n')
+    meter.serial.lines_in_buffer = BROKEN_PACKET.splitlines(True)
     meter.read_one_packet()
 
 
@@ -127,5 +127,5 @@ def test_meter_read_broken_packet():
 def test_meter_read_long_broken_packet():
     serial.Serial = SerialMock
     meter = SmartMeter('/dev/ttyUSB0')
-    meter.serial.lines_in_buffer = LONG_BROKEN_PACKET.split('\n')
+    meter.serial.lines_in_buffer = LONG_BROKEN_PACKET.splitlines(True)
     meter.read_one_packet()

@@ -15,6 +15,7 @@ from tests import NORMAL_PACKET_KAIFA3
 
 def test_default_packet_as_string():
     p = P1Packet(NORMAL_PACKET)
+
     assert p['header'] == '/ISk5\2ME382-1004'
     assert p['kwh']['eid'] == 'XXXXXXXXXXXXXXMYSERIALXXXXXXXXXXXXXX'
     assert p['kwh']['low']['consumed'] == 608.400
@@ -32,11 +33,11 @@ def test_default_packet_as_string():
     assert p['gas']['eid'] == '3238303131303031323332313337343132'
     assert p['gas']['total'] == 947.680
     assert p['gas']['valve'] == 1
-    assert str(p) == NORMAL_PACKET
+    assert p._raw == NORMAL_PACKET
 
 
 def test_default_packet_as_array():
-    p = P1Packet(NORMAL_PACKET.split('\n'))
+    p = P1Packet(NORMAL_PACKET)
     assert p['header'] == '/ISk5\2ME382-1004'
     assert p['kwh']['eid'] == 'XXXXXXXXXXXXXXMYSERIALXXXXXXXXXXXXXX'
     assert p['kwh']['low']['consumed'] == 608.400
@@ -54,12 +55,12 @@ def test_default_packet_as_array():
     assert p['gas']['eid'] == '3238303131303031323332313337343132'
     assert p['gas']['total'] == 947.680
     assert p['gas']['valve'] == 1
-    assert str(p) == NORMAL_PACKET
+    assert p._raw == NORMAL_PACKET
 
 
 def test_BROKEN_PACKET():
     p = P1Packet(BROKEN_PACKET)
-    assert p['header'] == ''
+    assert p['header'] == None
     assert p['kwh']['eid'] == None
     assert p['kwh']['low']['consumed'] == None
     assert p['kwh']['high']['consumed'] == None
@@ -97,7 +98,7 @@ def test_normal_packet_kaifa1_as_string():
     assert p['gas']['eid'] == '4730303235303033333337343136333136'
     assert p['gas']['total'] == 323.528
     assert p['gas']['valve'] == None
-    assert str(p) == NORMAL_PACKET_KAIFA1
+    assert p._raw == NORMAL_PACKET_KAIFA1
 
 
 def test_normal_packet_kaifa2_as_string():
@@ -119,7 +120,7 @@ def test_normal_packet_kaifa2_as_string():
     assert p['gas']['eid'] == '4730303233353631323139373231393134'
     assert p['gas']['total'] == 5290.211
     assert p['gas']['valve'] == None
-    assert str(p) == NORMAL_PACKET_KAIFA2
+    assert p._raw == NORMAL_PACKET_KAIFA2
 
 
 def test_normal_packet_kaifa3_as_string():
@@ -141,4 +142,4 @@ def test_normal_packet_kaifa3_as_string():
     assert p['gas']['eid'] == '4730303332353631323639323539363136'
     assert p['gas']['total'] == 230.576
     assert p['gas']['valve'] == None
-    assert str(p) == NORMAL_PACKET_KAIFA3
+    assert p._raw == NORMAL_PACKET_KAIFA3
