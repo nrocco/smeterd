@@ -1,10 +1,11 @@
 import re
 import logging
 import serial
-
+import crcmod.predefined
 
 
 log = logging.getLogger(__name__)
+crc16 = crcmod.predefined.mkPredefinedCrcFun('crc16')
 
 
 class SmartMeter(object):
@@ -94,11 +95,18 @@ class SmartMeterError(Exception):
 
 
 
-class P1Packet(object):
-    _raw = ''
+class P1PacketError(Exception):
+    pass
 
-    def __init__(self, data):
-        self._raw = data
+
+
+class P1Packet(object):
+    _datagram = ''
+
+    def __init__(self, datagram):
+        self._datagram = datagram
+
+        self.validate()
 
         keys = {}
         keys['header'] = self.get(b'^\s*(/.*)\r\n')
@@ -132,8 +140,10 @@ class P1Packet(object):
 
         self._keys = keys
 
+
     def __getitem__(self, key):
         return self._keys[key]
+
 
     def get_float(self, regex, default=None):
         result = self.get(regex, None)
@@ -141,17 +151,35 @@ class P1Packet(object):
             return default
         return float(self.get(regex, default))
 
+
     def get_int(self, regex, default=None):
         result = self.get(regex, None)
         if not result:
             return default
         return int(result)
 
+
     def get(self, regex, default=None):
-        results = re.search(regex, self._raw, re.MULTILINE)
+        results = re.search(regex, self._datagram, re.MULTILINE)
         if not results:
             return default
         return results.group(1).decode('ascii')
 
+
+    def validate(self):
+        pattern = re.compile(b'\r\n(?=!)')
+        for match in pattern.finditer(self._datagram):
+            packet = self._datagram[:match.end() + 1]
+            checksum = self._datagram[match.end() + 1:]
+
+        if checksum.strip():
+            given_checksum = int('0x' + checksum.decode('ascii').strip(), 16)
+            calculated_checksum = crc16(packet)
+
+            if given_checksum != calculated_checksum:
+                print('given={}, calculated={}'.format(given_checksum, calculated_checksum))
+                raise P1PacketError('P1Packet with invalid checksum found')
+
+
     def __str__(self):
-        return self._raw.decode('ascii')
+        return self._datagram.decode('ascii')
