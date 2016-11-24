@@ -90,7 +90,7 @@ def test_meter_read_one_packet():
     assert p['gas']['eid'] == '3238303131303031323332313337343132'
     assert p['gas']['total'] == 947.680
     assert p['gas']['valve'] == 1
-    assert p._raw == NORMAL_PACKET
+    assert p._datagram == NORMAL_PACKET
 
 
 def test_meter_read_one_packet_1003():
@@ -112,7 +112,7 @@ def test_meter_read_one_packet_1003():
     assert p['kwh']['switch'] == 1
     assert p['msg']['code'] == None
     assert p['msg']['text'] == None
-    assert p._raw == NORMAL_PACKET_1003
+    assert p._datagram == NORMAL_PACKET_1003
 
 
 @raises(SmartMeterError)
