@@ -1,2 +1,2 @@
-__version__ = '2.5.2'
+__version__ = '2.6.0'
 __default_serial__ = '/dev/ttyUSB0'
