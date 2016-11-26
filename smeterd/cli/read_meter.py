@@ -1,22 +1,13 @@
 import logging
-
 from datetime import datetime
 
 from serial.serialutil import SerialException
-
-from pycli_tools.parsers import get_argparser
 from pycli_tools.commands import Command, arg
 
-from smeterd import __version__
-
+from smeterd import __default_serial__
 from smeterd.meter import SmartMeter
 
-
-
 log = logging.getLogger(__name__)
-
-
-DEFAULT_SERIAL='/dev/ttyUSB0'
 
 
 class ReadMeterCommand(Command):
@@ -28,8 +19,8 @@ class ReadMeterCommand(Command):
     '''
 
     args = [
-        arg('--serial-port', default=DEFAULT_SERIAL, metavar=DEFAULT_SERIAL,
-            help='serial port to read packets from (defaults to %s)' % DEFAULT_SERIAL),
+        arg('--serial-port', default=__default_serial__, metavar=__default_serial__,
+            help='serial port to read packets from (defaults to %s)' % __default_serial__),
         arg('--baudrate', default=9600,
             help='baudrate for the serial connection'),
         arg('--tsv', action='store_true',
@@ -65,21 +56,3 @@ class ReadMeterCommand(Command):
             print('\t'.join(map(str, [d for k,d in data])))
         else:
             print('\n'.join(['%-25s %s' % (k,d) for k,d in data]))
-
-
-
-
-def parse_and_run(args=None):
-    parser = get_argparser(
-        prog='smeterd',
-        version=__version__,
-        logging_format='[%(asctime)-15s] %(levelname)s %(message)s',
-        description='Read smart meter P1 packets'
-    )
-
-    parser.add_commands([
-        ReadMeterCommand(),
-    ])
-
-    args = parser.parse_args()
-    args.func(args, parser=parser)

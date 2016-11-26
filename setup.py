@@ -45,7 +45,7 @@ setup(
     ],
     entry_points = {
         'console_scripts': [
-            'smeterd = smeterd.command:parse_and_run',
+            'smeterd = smeterd.cli:parse_and_run',
         ]
     },
     classifiers = [
