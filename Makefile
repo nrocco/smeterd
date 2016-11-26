@@ -7,7 +7,7 @@ PACKAGE = smeterd
 
 
 $(PY):
-	virtualenv env
+	pyvenv env
 	$(eval VIRTUAL_ENV = $(PWD)/env)
 
 
