@@ -31,6 +31,7 @@ setup(
     download_url = 'http://github.com/nrocco/smeterd/tags',
     include_package_data = True,
     install_requires = [
+        'crcmod>=1.7',
         'pyserial>=3.1',
         'pycli-tools>=2.0.2',
     ],
