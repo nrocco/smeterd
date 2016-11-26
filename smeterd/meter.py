@@ -88,6 +88,12 @@ class SmartMeter(object):
 
         return P1Packet(datagram)
 
+    def __enter__(self):
+        return self
+
+    def __exit__(self, type, value, traceback):
+        self.disconnect()
+
 
 
 class SmartMeterError(Exception):
