@@ -41,7 +41,8 @@ setup(
         'coverage',
     ],
     packages = [
-        'smeterd'
+        'smeterd',
+        'smeterd.cli',
     ],
     entry_points = {
         'console_scripts': [
