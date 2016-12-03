@@ -15,28 +15,34 @@ class ReadMeterCommand(Command):
     '''Read a single P1 packet
 
     Read a single packet from the smart meter.
-    Packets can either be printed to stdout or stored
-    in a sqlite database.
+    Packets will be printed to stdout.
     '''
 
     args = [
-        arg('--serial-port', default=__default_serial__, metavar=__default_serial__, help='serial port to read packets from (defaults to %s)' % __default_serial__),
-        arg('--baudrate', default=9600, help='baudrate for the serial connection'),
-        arg('--xonxoff', action='store_true', help='wether to enable software flow control'),
-        arg('--bytesize', type=int, default=serial.SEVENBITS, help='byte size for the serial connection, choose from 5, 6, 7, 8'),
-        arg('--parity', default=serial.PARITY_EVEN, help='parity for the serial connection, choose from N, E, O, M, S'),
-        arg('--stopbits', type=float, default=serial.STOPBITS_ONE, help='stop bits for the serial connection, choose from 1, 1.5, 2'),
+        # options controlling input
+        arg('--serial-port',     default=__default_serial__, metavar=__default_serial__, help='Device name to read packets from (defaults to %s)' % __default_serial__),
+        arg('--serial-baudrate', default=9600, help='Baud rate such as 9600 or 115200 etc.'),
+        arg('--serial-xonxoff',  action='store_true', help='Enable software flow control'),
+        arg('--serial-bytesize', type=int, default=serial.SEVENBITS, help='Number of data bits. Possible values: 5, 6, 7, 8'),
+        arg('--serial-parity',   default=serial.PARITY_EVEN, help='Enable parity checking. Possible values: N, E, O, M, S'),
+        arg('--serial-stopbits', type=float, default=serial.STOPBITS_ONE, help='Number of stop bits. Possible values: 1, 1.5, 2'),
+        arg('--serial-timeout',  type=int, default=10, help='Set a read timeout value'),
+
+        # options controlling output
         arg('--tsv', action='store_true', help='display packet in tab separated value form'),
         arg('--raw', action='store_true', help='display packet in raw form'),
     ]
 
     def run(self, args, parser):
-        meter = SmartMeter(args.serial_port,
-                           baudrate=args.baudrate,
-                           bytesize=args.bytesize,
-                           parity=args.parity,
-                           stopbits=args.stopbits,
-                           xonxoff=args.xonxoff)
+        meter = SmartMeter(
+            args.serial_port,
+            baudrate=args.serial_baudrate,
+            bytesize=args.serial_bytesize,
+            parity=args.serial_parity,
+            stopbits=args.serial_stopbits,
+            xonxoff=args.serial_xonxoff,
+            timeout=args.serial_timeout,
+        )
 
         try:
             packet = meter.read_one_packet()
@@ -61,3 +67,5 @@ class ReadMeterCommand(Command):
             print('\t'.join(map(str, [d for k,d in data])))
         else:
             print('\n'.join(['%-25s %s' % (k,d) for k,d in data]))
+
+        return 0
