@@ -27,8 +27,8 @@ test: $(PY)
 	$(PY) setup.py test
 
 
-bump:
-	@echo "Current $(PACKAGE) version is: $(shell sed -E "s/__version__ = .([^']+)./\\1/" $(PACKAGE)/__init__.py)"
+bump: $(PY)
+	@echo "Current $(PACKAGE) version is: $(shell $(PY) setup.py --version)"
 	@test ! -z "$(version)" || ( echo "specify a version number: make bump version=X.X.X" && exit 1 )
 	@! git status --porcelain 2> /dev/null | grep -v "^??" || ( echo 'uncommited changes. commit them first' && exit 1 )
 	@echo "Bumping to $(version)"
