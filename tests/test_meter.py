@@ -1,10 +1,7 @@
 import serial
-
 from nose.tools import raises
-
 from smeterd.meter import SmartMeter
 from smeterd.meter import SmartMeterError
-
 from tests import SerialMock
 from tests import NORMAL_PACKET
 from tests import BROKEN_PACKET
@@ -12,6 +9,7 @@ from tests import LONG_BROKEN_PACKET
 from tests import NORMAL_PACKET_1003
 
 Serial = serial.Serial
+
 
 @raises(TypeError)
 def test_meter_typeerror():
