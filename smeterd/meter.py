@@ -23,7 +23,7 @@ class SmartMeter(object):
         config.update(self.serial_defaults)
         config.update(kwargs)
 
-        log.debug('Open serial connect to {} with:'.format(port, ', '.join('{}={}'.format(key, value) for key, value in config.items())))
+        log.debug('Open serial connect to {} with: {}'.format(port, ', '.join('{}={}'.format(key, value) for key, value in config.items())))
 
         try:
             self.serial = serial.Serial(port, **config)

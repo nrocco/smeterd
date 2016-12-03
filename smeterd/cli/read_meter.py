@@ -12,7 +12,7 @@ log = logging.getLogger(__name__)
 
 
 class ReadMeterCommand(Command):
-    '''Read a single P1 packet
+    '''read a single P1 packet to stdout
 
     Read a single packet from the smart meter.
     Packets will be printed to stdout.
