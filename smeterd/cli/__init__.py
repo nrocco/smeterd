@@ -8,6 +8,7 @@ def parse_and_run(args=None):
     parser = get_argparser(
         prog='smeterd',
         version=__version__,
+        arguments=args,
         logging_format='[%(asctime)-15s] %(levelname)s %(message)s',
         description='Read smart meter P1 packets'
     )
@@ -16,5 +17,6 @@ def parse_and_run(args=None):
         ReadMeterCommand(),
     ])
 
-    args = parser.parse_args()
+    args = parser.parse_args(args)
+
     return args.func(args, parser=parser)
