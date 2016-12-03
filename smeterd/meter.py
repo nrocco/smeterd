@@ -9,18 +9,24 @@ crc16 = crcmod.predefined.mkPredefinedCrcFun('crc16')
 
 
 class SmartMeter(object):
+    serial_defaults = {
+        'baudrate': 9600,
+        'bytesize': serial.SEVENBITS,
+        'parity': serial.PARITY_EVEN,
+        'stopbits': serial.STOPBITS_ONE,
+        'xonxoff': False,
+        'timeout': 10,
+    }
 
-    def __init__(self, port, *args, **kwargs):
+    def __init__(self, port, **kwargs):
+        config = {}
+        config.update(self.serial_defaults)
+        config.update(kwargs)
+
+        log.debug('Open serial connect to {} with:'.format(port, ', '.join('{}={}'.format(key, value) for key, value in config.items())))
+
         try:
-            self.serial = serial.Serial(
-                port,
-                kwargs.get('baudrate', 9600),
-                bytesize=kwargs.get('bytesize', serial.SEVENBITS),
-                parity=kwargs.get('parity', serial.PARITY_EVEN),
-                stopbits=kwargs.get('stopbits', serial.STOPBITS_ONE),
-                xonxoff=kwargs.get('xonxoff', False),
-                timeout=10
-            )
+            self.serial = serial.Serial(port, **config)
         except (serial.SerialException,OSError) as e:
             raise SmartMeterError(e)
         else:
