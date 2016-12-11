@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import re
+import io
 import codecs
 
 from setuptools import setup
@@ -18,6 +19,11 @@ class NoseTestCommand(TestCommand):
         nose.run_exit(argv=['nosetests'])
 
 
+def load_requirements(filename):
+    with io.open(filename, encoding='utf-8') as reqfile:
+        return [line.strip() for line in reqfile if not line.startswith('#')]
+
+
 setup(
     name = 'smeterd',
     description = 'Read smart meter P1 packets',
@@ -30,11 +36,7 @@ setup(
     test_suite='nose.collector',
     download_url = 'http://github.com/nrocco/smeterd/tags',
     include_package_data = True,
-    install_requires = [
-        'crcmod>=1.7',
-        'pyserial>=3.1',
-        'pycli-tools>=2.0.2',
-    ],
+    install_requires=load_requirements('requirements.txt'),
     tests_require = [
         'nose',
         'mock',
