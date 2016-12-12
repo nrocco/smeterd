@@ -3,7 +3,7 @@ import re
 import io
 import codecs
 
-from setuptools import setup
+from setuptools import setup, find_packages
 from setuptools.command.test import test as TestCommand
 
 
@@ -30,27 +30,24 @@ setup(
     version = re.search(r'''^__version__\s*=\s*["'](.*)["']''', open('smeterd/__init__.py').read(), re.M).group(1),
     author = 'Nico Di Rocco',
     author_email = 'dirocco.nico@gmail.com',
-    url = 'http://nrocco.github.io/',
+    url = 'https://github.com/nrocco/smeterd',
     license = 'GPLv3',
     long_description = codecs.open('README.rst', 'rb', 'utf-8').read(),
-    test_suite='nose.collector',
-    download_url = 'http://github.com/nrocco/smeterd/tags',
+    test_suite = 'nose.collector',
+    download_url = 'https://github.com/nrocco/smeterd/tags',
     include_package_data = True,
-    install_requires=load_requirements('requirements.txt'),
+    install_requires = load_requirements('requirements.txt'),
     tests_require = [
         'nose',
         'mock',
         'coverage',
-    ],
-    packages = [
-        'smeterd',
-        'smeterd.cli',
     ],
     entry_points = {
         'console_scripts': [
             'smeterd = smeterd.cli:parse_and_run',
         ]
     },
+    packages = find_packages(),
     classifiers = [
         'Development Status :: 5 - Production/Stable',
         'Environment :: Console',
@@ -64,7 +61,7 @@ setup(
         'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
-         'Topic :: Software Development :: Libraries :: Python Modules',
+        'Topic :: Software Development :: Libraries :: Python Modules',
         'Topic :: Utilities'
     ],
     cmdclass = {
