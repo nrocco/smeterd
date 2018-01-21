@@ -1,6 +1,8 @@
 import re
 import logging
 import serial
+import time
+import datetime
 import crcmod.predefined
 
 
@@ -146,6 +148,13 @@ class P1Packet(object):
         keys['gas']['device_type'] = self.get_int(b'^0-1:24\.1\.0\((\d)+\)\r\n')
         keys['gas']['total'] = self.get_float(b'^(?:0-1:24\.2\.1(?:\(\d+[SW]\))?)?\(([0-9]{5}\.[0-9]{3})(?:\*m3)?\)\r\n', 0)
         keys['gas']['valve'] = self.get_int(b'^0-1:24\.4\.0\((\d)\)\r\n')
+
+        measured_at = self.get(b'^(?:0-1:24\.[23]\.[01](?:\((\d+)[SW]?\))?)')
+
+        if measured_at:
+            keys['gas']['measured_at'] = int(time.mktime(datetime.datetime.strptime(measured_at, "%y%m%d%H%M%S").timetuple()))
+        else:
+            keys['gas']['measured_at'] = None
 
         keys['msg'] = {}
         keys['msg']['code'] = self.get(b'^0-0:96\.13\.1\((\d+)\)\r\n')

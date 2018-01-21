@@ -76,7 +76,8 @@ class ReadMeterCommand(Command):
             ('Total kWh High consumed', int(packet['kwh']['high']['consumed']*1000)),
             ('Total kWh Low consumed', int(packet['kwh']['low']['consumed']*1000)),
             ('Total gas consumed', int(packet['gas']['total']*1000)),
-            ('Current kWh tariff', packet['kwh']['tariff'])
+            ('Current kWh tariff', packet['kwh']['tariff']),
+            ('Gas Measured At', packet['gas']['measured_at']),
         ]
 
         if args.tsv:
