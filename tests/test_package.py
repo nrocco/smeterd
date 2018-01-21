@@ -34,7 +34,7 @@ def test_default_packet_as_string():
     assert p['msg']['text'] == None
     assert p['gas']['device_type'] == 3
     assert p['gas']['eid'] == '3238303131303031323332313337343132'
-    assert p['gas']['measured_at'] == 1376150400
+    assert p['gas']['measured_at'] == 1376150400, p['gas']['measured_at']
     assert p['gas']['total'] == 947.680
     assert p['gas']['valve'] == 1
     assert p._datagram == NORMAL_PACKET
@@ -57,7 +57,7 @@ def test_default_packet_as_array():
     assert p['msg']['text'] == None
     assert p['gas']['device_type'] == 3
     assert p['gas']['eid'] == '3238303131303031323332313337343132'
-    assert p['gas']['measured_at'] == 1376150400
+    assert p['gas']['measured_at'] == 1376150400, p['gas']['measured_at']
     assert p['gas']['total'] == 947.680
     assert p['gas']['valve'] == 1
     assert p._datagram == NORMAL_PACKET
@@ -80,7 +80,7 @@ def test_BROKEN_PACKET():
     assert p['msg']['text'] == None
     assert p['gas']['device_type'] == 3
     assert p['gas']['eid'] == '3238303131303031323332313337343132'
-    assert p['gas']['measured_at'] == 1376150400
+    assert p['gas']['measured_at'] == 1376150400, p['gas']['measured_at']
     assert p['gas']['total'] == 947.680
     assert p['gas']['valve'] == 1
 
@@ -102,7 +102,7 @@ def test_normal_packet_kaifa1_as_string():
     assert p['msg']['text'] == None
     assert p['gas']['device_type'] == 3
     assert p['gas']['eid'] == '4730303235303033333337343136333136'
-    assert p['gas']['measured_at'] == 1473094800
+    assert p['gas']['measured_at'] == 1473094800, p['gas']['measured_at']
     assert p['gas']['total'] == 323.528
     assert p['gas']['valve'] == None
     assert p._datagram == NORMAL_PACKET_KAIFA1
@@ -125,7 +125,7 @@ def test_normal_packet_kaifa2_as_string():
     assert p['msg']['text'] == None
     assert p['gas']['device_type'] == 3
     assert p['gas']['eid'] == '4730303233353631323139373231393134'
-    assert p['gas']['measured_at'] == 1473019200
+    assert p['gas']['measured_at'] == 1473019200, p['gas']['measured_at']
     assert p['gas']['total'] == 5290.211
     assert p['gas']['valve'] == None
     assert p._datagram == NORMAL_PACKET_KAIFA2
@@ -148,7 +148,7 @@ def test_normal_packet_kaifa3_as_string():
     assert p['msg']['text'] == None
     assert p['gas']['device_type'] == 3
     assert p['gas']['eid'] == '4730303332353631323639323539363136'
-    assert p['gas']['measured_at'] == 1478451600
+    assert p['gas']['measured_at'] == 1478451600, p['gas']['measured_at']
     assert p['gas']['total'] == 230.576
     assert p['gas']['valve'] == None
     assert p._datagram == NORMAL_PACKET_KAIFA3
