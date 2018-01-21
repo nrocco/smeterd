@@ -1,9 +1,10 @@
 import re
 import logging
 import serial
-import time
-import datetime
 import crcmod.predefined
+
+from time import mktime
+from datetime import datetime
 
 
 log = logging.getLogger(__name__)
@@ -152,7 +153,7 @@ class P1Packet(object):
         measured_at = self.get(b'^(?:0-1:24\.[23]\.[01](?:\((\d+)[SW]?\))?)')
 
         if measured_at:
-            keys['gas']['measured_at'] = int(time.mktime(datetime.datetime.strptime(measured_at, "%y%m%d%H%M%S").timetuple()))
+            keys['gas']['measured_at'] = int(mktime(datetime.strptime(measured_at, "%y%m%d%H%M%S").timetuple()))
         else:
             keys['gas']['measured_at'] = None
 
