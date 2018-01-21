@@ -1,3 +1,5 @@
+from time import mktime
+from datetime import datetime
 from os.path import join, dirname, realpath
 import sys
 
@@ -34,6 +36,7 @@ def test_default_packet_as_string():
     assert p['msg']['text'] == None
     assert p['gas']['device_type'] == 3
     assert p['gas']['eid'] == '3238303131303031323332313337343132'
+    assert p['gas']['measured_at'] == int(mktime(datetime.strptime('130810180000', "%y%m%d%H%M%S").timetuple()))
     assert p['gas']['total'] == 947.680
     assert p['gas']['valve'] == 1
     assert p._datagram == NORMAL_PACKET
@@ -56,6 +59,7 @@ def test_default_packet_as_array():
     assert p['msg']['text'] == None
     assert p['gas']['device_type'] == 3
     assert p['gas']['eid'] == '3238303131303031323332313337343132'
+    assert p['gas']['measured_at'] == int(mktime(datetime.strptime('130810180000', "%y%m%d%H%M%S").timetuple()))
     assert p['gas']['total'] == 947.680
     assert p['gas']['valve'] == 1
     assert p._datagram == NORMAL_PACKET
@@ -78,6 +82,7 @@ def test_BROKEN_PACKET():
     assert p['msg']['text'] == None
     assert p['gas']['device_type'] == 3
     assert p['gas']['eid'] == '3238303131303031323332313337343132'
+    assert p['gas']['measured_at'] == int(mktime(datetime.strptime('130810180000', "%y%m%d%H%M%S").timetuple()))
     assert p['gas']['total'] == 947.680
     assert p['gas']['valve'] == 1
 
@@ -99,6 +104,7 @@ def test_normal_packet_kaifa1_as_string():
     assert p['msg']['text'] == None
     assert p['gas']['device_type'] == 3
     assert p['gas']['eid'] == '4730303235303033333337343136333136'
+    assert p['gas']['measured_at'] == int(mktime(datetime.strptime('160905190000', "%y%m%d%H%M%S").timetuple()))
     assert p['gas']['total'] == 323.528
     assert p['gas']['valve'] == None
     assert p._datagram == NORMAL_PACKET_KAIFA1
@@ -121,6 +127,7 @@ def test_normal_packet_kaifa2_as_string():
     assert p['msg']['text'] == None
     assert p['gas']['device_type'] == 3
     assert p['gas']['eid'] == '4730303233353631323139373231393134'
+    assert p['gas']['measured_at'] == int(mktime(datetime.strptime('160904220000', "%y%m%d%H%M%S").timetuple()))
     assert p['gas']['total'] == 5290.211
     assert p['gas']['valve'] == None
     assert p._datagram == NORMAL_PACKET_KAIFA2
@@ -143,6 +150,7 @@ def test_normal_packet_kaifa3_as_string():
     assert p['msg']['text'] == None
     assert p['gas']['device_type'] == 3
     assert p['gas']['eid'] == '4730303332353631323639323539363136'
+    assert p['gas']['measured_at'] == int(mktime(datetime.strptime('161106180000', "%y%m%d%H%M%S").timetuple()))
     assert p['gas']['total'] == 230.576
     assert p['gas']['valve'] == None
     assert p._datagram == NORMAL_PACKET_KAIFA3

@@ -10,7 +10,7 @@ Read P1 smart meter packets in Python
 installation
 ------------
 
-`smeterd` is fully python 2.7 and python 3.4 compatible.
+`smeterd` is fully python 2.7 up to python 3.6 compatible.
 
 It is highly recommended to use virtualenv for this.
 After having your virtualenv installed and activated run the following command to install
@@ -71,6 +71,7 @@ Read one packet from your meter using the following command::
     Total kWh Low consumed    546115
     Total gas consumed        963498
     Current kWh tariff        1
+    Gas Measured At           1516562094
 
 
 By default the `read-meter` commands spits out the current date, total kwh1,
@@ -79,15 +80,15 @@ total kwh2, total gas amounts and current kWh tariff on multiple lines.
 You can make it print the same values as a tab seperated list::
 
     $ smeterd read-meter --tsv
-    2013-05-04 22:22:32.224929	331557	199339	749169	1
+    2013-05-04 22:22:32.224929	331557	199339	749169	1	1516562094
 
 
 By piping the output of the `read-meter --tsv` command to a bash script you can fully
 customize what you want to do with the data::
 
     IFS='{tab}'
-    while read date kwh1 kwh2 gas tariff; do
-      mysql my_database -e "INSERT INTO data VALUES ('$date', $kwh1, $kwh2, $gas, $tariff);"
+    while read date kwh1 kwh2 gas tariff gas_measured_at; do
+      mysql my_database -e "INSERT INTO data VALUES ('$date', $kwh1, $kwh2, $gas, $tariff, $gas_measured_at);"
     done < /dev/stdin
 
 
