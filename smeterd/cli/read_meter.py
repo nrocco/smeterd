@@ -23,6 +23,8 @@ class ReadMeterCommand(Command):
     http://pyserial.readthedocs.io/en/latest/pyserial_api.html
     '''
 
+    show_output_choices = ['time', 'kwh_eid', 'gas_eid', 'consumed', 'tariff', 'gas_measured_at', 'produced', 'current']
+
     args = [
         # options controlling input
         arg('--serial-port',     help='device name to read packets from (defaults to %s)' % __default_serial__,
@@ -43,6 +45,9 @@ class ReadMeterCommand(Command):
                                  default=10, type=int, metavar=10),
 
         # options controlling output
+        arg('--show-output',     help='choose output to display. (one of: ' + ", ".join(show_output_choices) + ')',
+                                 default=('time', 'consumed', 'tariff', 'gas_measured_at'), type=str, nargs='+', metavar='param',
+                                 choices=show_output_choices),
         arg('--tsv', help='display packet in tab separated value form',
                      action='store_true'),
         arg('--raw', help='display packet in raw form',
@@ -71,18 +76,35 @@ class ReadMeterCommand(Command):
             print(str(packet))
             return 0
 
-        data = [
-            ('Time', datetime.now()),
-            ('Total kWh High consumed', int(packet['kwh']['high']['consumed']*1000)),
-            ('Total kWh Low consumed', int(packet['kwh']['low']['consumed']*1000)),
-            ('Total gas consumed', int(packet['gas']['total']*1000)),
-            ('Current kWh tariff', packet['kwh']['tariff']),
-            ('Gas Measured At', packet['gas']['measured_at']),
-        ]
+        # Construct output depending on user request
+        data = []
+        if ('time' in args.show_output):
+            data.append(('Time', datetime.now()))
+        if ('kwh_eid' in args.show_output):
+            data.append(('Electricity serial', packet['kwh']['eid']))
+        if ('gas_eid' in args.show_output):
+            data.append(('Gas serial', packet['gas']['eid']))
+        if ('consumed' in args.show_output):
+            data.extend([
+                ('Total electricity consumed (high, Wh)', int(packet['kwh']['high']['consumed']*1000)),
+                ('Total electricity consumed (low, Wh)', int(packet['kwh']['low']['consumed']*1000)),
+                ('Total gas consumed (m^3)', int(packet['gas']['total']*1000))])
+        if ('produced' in args.show_output):
+            data.extend([
+                ('Total electricity produced (high, Wh)', int(packet['kwh']['high']['produced']*1000)),
+                ('Total electricity produced (low, Wh)', int(packet['kwh']['low']['produced']*1000))])
+        if ('current' in args.show_output):
+            data.extend([
+                ('Current electricity consumption (W)', int(packet['kwh']['current_consumed']*1000)),
+                ('Current electricity production (W)', int(packet['kwh']['current_produced']*1000))])
+        if ('tariff' in args.show_output):
+            data.append(('Current electricity tariff', packet['kwh']['tariff']))
+        if ('gas_measured_at' in args.show_output):
+            data.append(('Gas measured at', packet['gas']['measured_at']))
 
         if args.tsv:
             print('\t'.join(map(str, [d for k,d in data])))
         else:
-            print('\n'.join(['%-25s %s' % (k,d) for k,d in data]))
+            print('\n'.join(['%-40s %s' % (k,d) for k,d in data]))
 
         return 0
