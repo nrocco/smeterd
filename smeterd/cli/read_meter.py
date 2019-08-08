@@ -45,6 +45,10 @@ class ReadMeterCommand(Command):
                                  default=10, type=int, metavar=10),
 
         # options controlling output
+        arg('--elec-unit',       help='electricity unit to use (defaults to Wh).',
+                                 default='Wh', type=str, choices=['Wh', 'kWh', 'J', 'MJ']),
+        arg('--gas-unit',        help='gas unit to use (defaults to m^3). Caloric units (J, MJ) based on Dutch gas @ 43.94 MJ/m^3.',
+                                 default='m3', type=str, choices=['m3', 'l', 'J', 'MJ']),
         arg('--show-output',     help='choose output to display. (one of: ' + ", ".join(show_output_choices) + ')',
                                  default=('time', 'consumed', 'tariff', 'gas_measured_at'), type=str, nargs='+', metavar='param',
                                  choices=show_output_choices),
@@ -76,6 +80,20 @@ class ReadMeterCommand(Command):
             print(str(packet))
             return 0
 
+        # Set multiplication factor based on requested unit
+        elec_unit_factor = {
+            'Wh':   1000,
+            'kWh':  1,
+            'J':    1000*3600,
+            'MJ':   1000*3600/1000/1000
+        }
+        gas_unit_factor = {
+            'm3':   1000,
+            'l':    1,
+            'J':    43.935,
+            'MJ':   1000 * 43.935 # 43.46 - 44.41 MJ/m^3(n) legal Wobbe-index ('Bovenwaarde') for Dutch Groningen gas, also widely used in north-west Europe: https://wetten.overheid.nl/BWBR0035367/2019-01-01#Bijlage2
+        }
+
         # Construct output depending on user request
         data = []
         if ('time' in args.show_output):
@@ -86,13 +104,13 @@ class ReadMeterCommand(Command):
             data.append(('Gas serial', packet['gas']['eid']))
         if ('consumed' in args.show_output):
             data.extend([
-                ('Total electricity consumed (high, Wh)', int(packet['kwh']['high']['consumed']*1000)),
-                ('Total electricity consumed (low, Wh)', int(packet['kwh']['low']['consumed']*1000)),
-                ('Total gas consumed (m^3)', int(packet['gas']['total']*1000))])
+                ('Total electricity consumed (high, '+args.elec_unit+')', int(packet['kwh']['high']['consumed']*elec_unit_factor[args.elec_unit])),
+                ('Total electricity consumed (low, '+args.elec_unit+')', int(packet['kwh']['low']['consumed']*elec_unit_factor[args.elec_unit])),
+                ('Total gas consumed ('+args.gas_unit+')', int(packet['gas']['total']*gas_unit_factor[args.gas_unit]))])
         if ('produced' in args.show_output):
             data.extend([
-                ('Total electricity produced (high, Wh)', int(packet['kwh']['high']['produced']*1000)),
-                ('Total electricity produced (low, Wh)', int(packet['kwh']['low']['produced']*1000))])
+                ('Total electricity produced (high, '+args.elec_unit+')', int(packet['kwh']['high']['produced']*elec_unit_factor[args.elec_unit])),
+                ('Total electricity produced (low, '+args.elec_unit+')', int(packet['kwh']['low']['produced']*elec_unit_factor[args.elec_unit]))])
         if ('current' in args.show_output):
             data.extend([
                 ('Current electricity consumption (W)', int(packet['kwh']['current_consumed']*1000)),
