@@ -10,7 +10,7 @@ Read P1 smart meter packets in Python
 installation
 ------------
 
-`smeterd` is fully python 2.7 up to python 3.6 compatible.
+`smeterd` is fully python 3.6+ compatible.
 
 It is highly recommended to use virtualenv for this.
 After having your virtualenv installed and activated run the following command to install
@@ -94,7 +94,7 @@ customize what you want to do with the data::
 
 Typically you run this command from `cron` every x minutes (e.g. 5 minutes)::
 
-    */5 * * * * /path/to/virtualenv/bin/smeterd read-meter | save_to_mysql_script.sh
+    */5 * * * * /path/to/venv/bin/smeterd read-meter | save_to_mysql_script.sh
 
 
 If you need to use another serial port then the default `/dev/ttyUSB0` you can
