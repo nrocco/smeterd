@@ -1,22 +1,18 @@
+import click
+import logging
+
 from smeterd import __version__
-from pycli_tools.parsers import get_argparser
-
-from smeterd.cli.read_meter import ReadMeterCommand
+from .read_meter import read_meter
 
 
-def parse_and_run(args=None):
-    parser = get_argparser(
-        prog='smeterd',
-        version=__version__,
-        arguments=args,
-        logging_format='[%(asctime)-15s] %(levelname)s %(message)s',
-        description='Read smart meter P1 packets'
-    )
+logging.basicConfig(format='[%(asctime)-15s] %(levelname)s %(message)s')
 
-    parser.add_commands([
-        ReadMeterCommand(),
-    ])
 
-    args = parser.parse_args(args)
+@click.group()
+@click.version_option(version=__version__)
+def cli():
+    """Read smart meter P1 packets"""
+    pass
 
-    return args.func(args, parser=parser)
+
+cli.add_command(read_meter)
