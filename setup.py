@@ -14,7 +14,7 @@ def load_requirements(filename):
 setup(
     name='smeterd',
     description='Read smart meter P1 packets',
-    version='2.8.1',
+    version='2.9.0',
     author='Nico Di Rocco',
     author_email='dirocco.nico@gmail.com',
     url='https://github.com/nrocco/smeterd',
