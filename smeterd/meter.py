@@ -117,7 +117,16 @@ class P1Packet(object):
         self.validate()
 
         keys = {}
+
         keys['header'] = self.get(rb'^\s*(/.*)\r\n')
+        keys['version'] = self.get_int(rb'^1-3:0\.2\.8\((\d+)\)\r\n')
+
+        timestamp = self.get(rb'^0-0:1\.0\.0\((\d+)[SW]\)\r\n')
+
+        if timestamp:
+            keys['timestamp'] = int(mktime(datetime.strptime(timestamp, "%y%m%d%H%M%S").timetuple()))
+        else:
+            keys['timestamp'] = None
 
         keys['kwh'] = {}
         keys['kwh']['eid'] = self.get(rb'^0-0:96\.1\.1\(([^)]+)\)\r\n')
@@ -135,6 +144,20 @@ class P1Packet(object):
 
         keys['kwh']['current_consumed'] = self.get_float(rb'^1-0:1\.7\.0\(([0-9]+\.[0-9]+)\*kW\)\r\n')
         keys['kwh']['current_produced'] = self.get_float(rb'^1-0:2\.7\.0\(([0-9]+\.[0-9]+)\*kW\)\r\n')
+
+        keys['instantaneous'] = {}
+        keys['instantaneous']['l1'] = {}
+        keys['instantaneous']['l1']['volts'] = self.get_float(rb'^1-0:32\.7\.0\((\d+\.\d+)\*V\)\r\n')
+        keys['instantaneous']['l1']['amps'] = self.get_int(rb'^1-0:31\.7\.0\((\d+)\*A\)\r\n')
+        keys['instantaneous']['l1']['watts'] = self.get_float(rb'^1-0:21\.7\.0\((\d+\.\d+)\*kW\)\r\n', 0) * 1000
+        keys['instantaneous']['l2'] = {}
+        keys['instantaneous']['l2']['volts'] = self.get_float(rb'^1-0:52\.7\.0\((\d+\.\d+)\*V\)\r\n')
+        keys['instantaneous']['l2']['amps'] = self.get_int(rb'^1-0:51\.7\.0\((\d+)\*A\)\r\n')
+        keys['instantaneous']['l2']['watts'] = self.get_float(rb'^1-0:41\.7\.0\((\d+\.\d+)\*kW\)\r\n', 0) * 1000
+        keys['instantaneous']['l3'] = {}
+        keys['instantaneous']['l3']['volts'] = self.get_float(rb'^1-0:72\.7\.0\((\d+\.\d+)\*V\)\r\n')
+        keys['instantaneous']['l3']['amps'] = self.get_int(rb'^1-0:71\.7\.0\((\d+)\*A\)\r\n')
+        keys['instantaneous']['l3']['watts'] = self.get_float(rb'^1-0:61\.7\.0\((\d+\.\d+)\*kW\)\r\n', 0) * 1000
 
         keys['gas'] = {}
         keys['gas']['eid'] = self.get(rb'^0-1:96\.1\.0\(([^)]+)\)\r\n')

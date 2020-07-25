@@ -7,6 +7,7 @@ from tests import BROKEN_PACKET
 from tests import NORMAL_PACKET
 from tests import NORMAL_PACKET_CRC_INVALID
 from tests import NORMAL_PACKET_CRC_VALID
+from tests import NORMAL_PACKET_DSMR5
 from tests import NORMAL_PACKET_KAIFA1
 from tests import NORMAL_PACKET_KAIFA2
 from tests import NORMAL_PACKET_KAIFA3
@@ -17,6 +18,8 @@ class PackageTestCase(unittest.TestCase):
     def test_default_packet_as_string(self):
         p = P1Packet(NORMAL_PACKET)
         self.assertEqual(p['header'], '/ISk5\2ME382-1004')
+        self.assertEqual(p['version'], None)
+        self.assertEqual(p['timestamp'], None)
         self.assertEqual(p['kwh']['eid'], 'XXXXXXXXXXXXXXMYSERIALXXXXXXXXXXXXXX')
         self.assertEqual(p['kwh']['low']['consumed'], 608.400)
         self.assertEqual(p['kwh']['high']['consumed'], 490.342)
@@ -39,6 +42,8 @@ class PackageTestCase(unittest.TestCase):
     def test_default_packet_as_array(self):
         p = P1Packet(NORMAL_PACKET)
         self.assertEqual(p['header'], '/ISk5\2ME382-1004')
+        self.assertEqual(p['version'], None)
+        self.assertEqual(p['timestamp'], None)
         self.assertEqual(p['kwh']['eid'], 'XXXXXXXXXXXXXXMYSERIALXXXXXXXXXXXXXX')
         self.assertEqual(p['kwh']['low']['consumed'], 608.400)
         self.assertEqual(p['kwh']['high']['consumed'], 490.342)
@@ -61,6 +66,8 @@ class PackageTestCase(unittest.TestCase):
     def test_BROKEN_PACKET(self):
         p = P1Packet(BROKEN_PACKET)
         self.assertEqual(p['header'], None)
+        self.assertEqual(p['version'], None)
+        self.assertEqual(p['timestamp'], None)
         self.assertEqual(p['kwh']['eid'], None)
         self.assertEqual(p['kwh']['low']['consumed'], None)
         self.assertEqual(p['kwh']['high']['consumed'], None)
@@ -81,7 +88,9 @@ class PackageTestCase(unittest.TestCase):
 
     def test_normal_packet_kaifa1_as_string(self):
         p = P1Packet(NORMAL_PACKET_KAIFA1)
-        self.assertEqual(p['header'], '/KFM5KAIFA-METER', "{0} is not as expected".format(str(p['header'])))
+        self.assertEqual(p['header'], '/KFM5KAIFA-METER')
+        self.assertEqual(p['version'], 42)
+        self.assertEqual(p['timestamp'], 1473095680)
         self.assertEqual(p['kwh']['eid'], 'XXXXXXXXXXXXXXMYSERIALXXXXXXXXXXXXXX')
         self.assertEqual(p['kwh']['low']['consumed'], 498.215)
         self.assertEqual(p['kwh']['high']['consumed'], 550.159)
@@ -104,6 +113,8 @@ class PackageTestCase(unittest.TestCase):
     def test_normal_packet_kaifa2_as_string(self):
         p = P1Packet(NORMAL_PACKET_KAIFA2)
         self.assertEqual(p['header'], '/XMX5LGBBFFB231158062')
+        self.assertEqual(p['version'], 42)
+        self.assertEqual(p['timestamp'], 1473019487)
         self.assertEqual(p['kwh']['eid'], 'XXXXXXXXSERIALXXXXXXXXXXX')
         self.assertEqual(p['kwh']['low']['consumed'], 4018.859)
         self.assertEqual(p['kwh']['high']['consumed'], 2827.154)
@@ -126,6 +137,8 @@ class PackageTestCase(unittest.TestCase):
     def test_normal_packet_kaifa3_as_string(self):
         p = P1Packet(NORMAL_PACKET_KAIFA3)
         self.assertEqual(p['header'], '/KFM5KAIFA-METER')
+        self.assertEqual(p['version'], 42)
+        self.assertEqual(p['timestamp'], 1478454361)
         self.assertEqual(p['kwh']['eid'], 'XXXXXXXXSERIALXXXXXXXXXXX')
         self.assertEqual(p['kwh']['low']['consumed'], 608.303)
         self.assertEqual(p['kwh']['high']['consumed'], 598.271)
@@ -145,9 +158,44 @@ class PackageTestCase(unittest.TestCase):
         self.assertEqual(p['gas']['valve'], None)
         self.assertEqual(p._datagram, NORMAL_PACKET_KAIFA3)
 
+    def test_normal_packet_dsmr5_as_string(self):
+        p = P1Packet(NORMAL_PACKET_DSMR5)
+        self.assertEqual(p['header'], '/Ene5\\T210-D ESMR5.0')
+        self.assertEqual(p['version'], 50)
+        self.assertEqual(p['timestamp'], 1570992561)
+        self.assertEqual(p['kwh']['eid'], '4530303438303030303131393037363138')
+        self.assertEqual(p['kwh']['low']['consumed'], 5491.102)
+        self.assertEqual(p['kwh']['high']['consumed'], 3602.765)
+        self.assertEqual(p['kwh']['low']['produced'], 3355.937)
+        self.assertEqual(p['kwh']['high']['produced'], 8025.525)
+        self.assertEqual(p['kwh']['tariff'], 1)
+        self.assertEqual(p['kwh']['current_consumed'], 2.721)
+        self.assertEqual(p['kwh']['current_produced'], 0)
+        self.assertEqual(p['kwh']['treshold'], None)
+        self.assertEqual(p['kwh']['switch'], None)
+        self.assertEqual(p['instantaneous']['l1']['volts'], 232.0)
+        self.assertEqual(p['instantaneous']['l1']['amps'], 8)
+        self.assertEqual(p['instantaneous']['l1']['watts'], 1924.0)
+        self.assertEqual(p['instantaneous']['l2']['volts'], 235.0)
+        self.assertEqual(p['instantaneous']['l2']['amps'], 2)
+        self.assertEqual(p['instantaneous']['l2']['watts'], 552.0)
+        self.assertEqual(p['instantaneous']['l3']['volts'], 235.0)
+        self.assertEqual(p['instantaneous']['l3']['amps'], 1)
+        self.assertEqual(p['instantaneous']['l3']['watts'], 244.0)
+        self.assertEqual(p['msg']['code'], None)
+        self.assertEqual(p['msg']['text'], None)
+        self.assertEqual(p['gas']['device_type'], None)
+        self.assertEqual(p['gas']['eid'], None)
+        self.assertEqual(p['gas']['measured_at'], None)
+        self.assertEqual(p['gas']['total'], 0)
+        self.assertEqual(p['gas']['valve'], None)
+        self.assertEqual(p._datagram, NORMAL_PACKET_DSMR5)
+
     def test_normal_packet_with_crc_check(self):
         p = P1Packet(NORMAL_PACKET_CRC_VALID)
         self.assertEqual(p['header'], '/KFM5KAIFA-METER')
+        self.assertEqual(p['version'], 42)
+        self.assertEqual(p['timestamp'], 1478509180)
         self.assertEqual(p['kwh']['tariff'], 2)
         self.assertEqual(p['gas']['total'], 1350.170)
         self.assertEqual(p._datagram, NORMAL_PACKET_CRC_VALID)
