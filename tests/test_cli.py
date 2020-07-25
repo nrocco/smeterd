@@ -1,53 +1,76 @@
-import mock
-from smeterd.cli import parse_and_run
+import unittest
+
+from click.testing import CliRunner
+from smeterd.cli import cli
+from tests import BROKEN_PACKET
+from tests import NORMAL_PACKET
+from unittest import mock
 
 
-@mock.patch('smeterd.cli.read_meter.SmartMeter')
-def test_cli_default_options(mocked_meter):
-    result = parse_and_run(['read-meter'])
+class CliTestCase(unittest.TestCase):
+    @mock.patch('serial.Serial')
+    def test_cli(self, mocked_serial):
+        mocked_serial.return_value.readline.side_effect = NORMAL_PACKET.splitlines(True)
+        runner = CliRunner()
+        result = runner.invoke(cli, [
+            'read-meter',
+        ])
+        mocked_serial.assert_called_with('/dev/ttyUSB0', baudrate=9600, bytesize=7, parity='E', stopbits=1.0, xonxoff=False, timeout=10)
+        self.assertEqual(result.exit_code, 0)
 
-    assert mocked_meter.call_args[0][0] == '/dev/ttyUSB0'
-    assert mocked_meter.call_args[1]['baudrate'] == 9600
-    assert mocked_meter.call_args[1]['bytesize'] == 7
-    assert mocked_meter.call_args[1]['parity'] == 'E'
-    assert mocked_meter.call_args[1]['stopbits'] == 1
-    assert mocked_meter.call_args[1]['timeout'] == 10
-    assert mocked_meter.call_args[1]['xonxoff'] == False
+    @mock.patch('serial.Serial')
+    def test_cli_broken(self, mocked_serial):
+        mocked_serial.return_value.readline.side_effect = BROKEN_PACKET.splitlines(True)
+        runner = CliRunner()
+        result = runner.invoke(cli, [
+            'read-meter',
+        ])
+        mocked_serial.assert_called_with('/dev/ttyUSB0', baudrate=9600, bytesize=7, parity='E', stopbits=1.0, xonxoff=False, timeout=10)
+        self.assertEqual(result.exit_code, 1)
 
-    assert 0 == result
+    @mock.patch('serial.Serial')
+    def test_cli_custom_options(self, mocked_serial):
+        mocked_serial.return_value.readline.side_effect = NORMAL_PACKET.splitlines(True)
+        runner = CliRunner()
+        result = runner.invoke(cli, [
+            'read-meter',
+            '--serial-port', '/foo/bar',
+            '--serial-baudrate', '115200',
+            '--serial-bytesize', '8',
+            '--serial-parity', 'N',
+            '--serial-stopbits', '2',
+            '--serial-timeout', '5',
+            '--serial-xonxoff'
+        ])
+        mocked_serial.assert_called_with('/foo/bar', baudrate=115200, bytesize=8, parity='N', stopbits=2.0, xonxoff=True, timeout=5)
+        self.assertEqual(result.exit_code, 0)
 
+    @mock.patch('serial.Serial')
+    def test_cli_raw(self, mocked_serial):
+        mocked_serial.return_value.readline.side_effect = NORMAL_PACKET.splitlines(True)
+        runner = CliRunner()
+        result = runner.invoke(cli, [
+            'read-meter',
+            '--raw',
+        ])
+        mocked_serial.assert_called_with('/dev/ttyUSB0', baudrate=9600, bytesize=7, parity='E', stopbits=1.0, xonxoff=False, timeout=10)
+        self.assertEqual(result.exit_code, 0)
 
-@mock.patch('smeterd.cli.read_meter.SmartMeter')
-def test_cli_custom_options(mocked_meter):
-    result = parse_and_run([
-        'read-meter',
-        '--serial-port', '/foo/bar',
-        '--serial-baudrate', '115200',
-        '--serial-bytesize', '8',
-        '--serial-parity', 'N',
-        '--serial-stopbits', '2',
-        '--serial-timeout', '5',
-        '--serial-xonxoff'
-    ])
-
-    assert mocked_meter.call_args[0][0] == '/foo/bar'
-    assert mocked_meter.call_args[1]['baudrate'] == 115200
-    assert mocked_meter.call_args[1]['bytesize'] == 8
-    assert mocked_meter.call_args[1]['parity'] == 'N'
-    assert mocked_meter.call_args[1]['stopbits'] == 2
-    assert mocked_meter.call_args[1]['timeout'] == 5
-    assert mocked_meter.call_args[1]['xonxoff'] == True
-
-    assert 0 == result
-
-
-@mock.patch('smeterd.cli.read_meter.SmartMeter')
-def test_cli_legacy_options(mocked_meter):
-    result = parse_and_run([
-        'read-meter',
-        '--baudrate', '115200',
-    ])
-
-    assert mocked_meter.call_args[1]['baudrate'] == 115200
-
-    assert 0 == result
+    @mock.patch('serial.Serial')
+    def test_cli_all_output(self, mocked_serial):
+        mocked_serial.return_value.readline.side_effect = NORMAL_PACKET.splitlines(True)
+        runner = CliRunner()
+        result = runner.invoke(cli, [
+            'read-meter',
+            '--tsv',
+            '--show-output=time',
+            '--show-output=kwh_eid',
+            '--show-output=gas_eid',
+            '--show-output=consumed',
+            '--show-output=tariff',
+            '--show-output=gas_measured_at',
+            '--show-output=produced',
+            '--show-output=current',
+        ])
+        mocked_serial.assert_called_with('/dev/ttyUSB0', baudrate=9600, bytesize=7, parity='E', stopbits=1.0, xonxoff=False, timeout=10)
+        self.assertEqual(result.exit_code, 0)

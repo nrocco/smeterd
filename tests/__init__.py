@@ -1,30 +1,3 @@
-class SerialMock(object):
-    lines_in_buffer = []
-
-    def __init__(self, port, *args, **kwargs):
-        self.name = port
-        self.open()
-
-    def open(self):
-        self.is_open = True;
-
-    def close(self):
-        self.is_open = False;
-
-    def isOpen(self):
-        return self.is_open
-
-    def setRTS(self, value):
-        pass
-
-    def readline(self):
-        if len(self.lines_in_buffer) > 0:
-            return self.lines_in_buffer.pop(0)
-        else:
-            raise Exception('empty buffer')
-            return ''
-
-
 NORMAL_PACKET = b'''/ISk5\2ME382-1004\r
 \r
 0-0:96.1.1(XXXXXXXXXXXXXXMYSERIALXXXXXXXXXXXXXX)\r

@@ -30,14 +30,13 @@ class SmartMeter(object):
 
         try:
             self.serial = serial.Serial(port, **config)
-        except (serial.SerialException,OSError) as e:
+        except (serial.SerialException, OSError) as e:
             raise SmartMeterError(e)
         else:
             self.serial.setRTS(False)
             self.port = self.serial.name
 
         log.info('New serial connection opened to %s', self.port)
-
 
     def connect(self):
         if not self.serial.isOpen():
@@ -47,7 +46,6 @@ class SmartMeter(object):
         else:
             log.debug('`%s` was already open.', self.serial.name)
 
-
     def disconnect(self):
         if self.serial.isOpen():
             log.info('Closing connection to `%s`.', self.serial.name)
@@ -55,17 +53,14 @@ class SmartMeter(object):
         else:
             log.debug('`%s` was already closed.', self.serial.name)
 
-
     def connected(self):
         return self.serial.isOpen()
-
 
     def read_one_packet(self):
         datagram = b''
         lines_read = 0
         startFound = False
         endFound = False
-        max_lines = 35 #largest known telegram has 35 lines
 
         log.info('Start reading lines')
 
@@ -80,11 +75,11 @@ class SmartMeter(object):
 
             lines_read += 1
 
-            if re.match(b'.*(?=/)', line):
+            if re.match(rb'.*(?=/)', line):
                 startFound = True
                 endFound = False
                 datagram = line.lstrip()
-            elif re.match(b'(?=!)', line):
+            elif re.match(rb'(?=!)', line):
                 endFound = True
                 datagram = datagram + line
             else:
@@ -105,15 +100,12 @@ class SmartMeter(object):
         self.disconnect()
 
 
-
 class SmartMeterError(Exception):
     pass
 
 
-
 class P1PacketError(Exception):
     pass
-
 
 
 class P1Packet(object):
@@ -125,32 +117,32 @@ class P1Packet(object):
         self.validate()
 
         keys = {}
-        keys['header'] = self.get(b'^\s*(/.*)\r\n')
+        keys['header'] = self.get(rb'^\s*(/.*)\r\n')
 
         keys['kwh'] = {}
-        keys['kwh']['eid'] = self.get(b'^0-0:96\.1\.1\(([^)]+)\)\r\n')
-        keys['kwh']['tariff'] = self.get_int(b'^0-0:96\.14\.0\(([0-9]+)\)\r\n')
-        keys['kwh']['switch'] = self.get_int(b'^0-0:96\.3\.10\((\d)\)\r\n')
-        keys['kwh']['treshold'] = self.get_float(b'^0-0:17\.0\.0\(([0-9]{4}\.[0-9]{2})\*kW\)\r\n')
+        keys['kwh']['eid'] = self.get(rb'^0-0:96\.1\.1\(([^)]+)\)\r\n')
+        keys['kwh']['tariff'] = self.get_int(rb'^0-0:96\.14\.0\(([0-9]+)\)\r\n')
+        keys['kwh']['switch'] = self.get_int(rb'^0-0:96\.3\.10\((\d)\)\r\n')
+        keys['kwh']['treshold'] = self.get_float(rb'^0-0:17\.0\.0\(([0-9]{4}\.[0-9]{2})\*kW\)\r\n')
 
         keys['kwh']['low'] = {}
-        keys['kwh']['low']['consumed'] = self.get_float(b'^1-0:1\.8\.1\(([0-9]+\.[0-9]+)\*kWh\)\r\n')
-        keys['kwh']['low']['produced'] = self.get_float(b'^1-0:2\.8\.1\(([0-9]+\.[0-9]+)\*kWh\)\r\n')
+        keys['kwh']['low']['consumed'] = self.get_float(rb'^1-0:1\.8\.1\(([0-9]+\.[0-9]+)\*kWh\)\r\n')
+        keys['kwh']['low']['produced'] = self.get_float(rb'^1-0:2\.8\.1\(([0-9]+\.[0-9]+)\*kWh\)\r\n')
 
         keys['kwh']['high'] = {}
-        keys['kwh']['high']['consumed'] = self.get_float(b'^1-0:1\.8\.2\(([0-9]+\.[0-9]+)\*kWh\)\r\n')
-        keys['kwh']['high']['produced'] = self.get_float(b'^1-0:2\.8\.2\(([0-9]+\.[0-9]+)\*kWh\)\r\n')
+        keys['kwh']['high']['consumed'] = self.get_float(rb'^1-0:1\.8\.2\(([0-9]+\.[0-9]+)\*kWh\)\r\n')
+        keys['kwh']['high']['produced'] = self.get_float(rb'^1-0:2\.8\.2\(([0-9]+\.[0-9]+)\*kWh\)\r\n')
 
-        keys['kwh']['current_consumed'] = self.get_float(b'^1-0:1\.7\.0\(([0-9]+\.[0-9]+)\*kW\)\r\n')
-        keys['kwh']['current_produced'] = self.get_float(b'^1-0:2\.7\.0\(([0-9]+\.[0-9]+)\*kW\)\r\n')
+        keys['kwh']['current_consumed'] = self.get_float(rb'^1-0:1\.7\.0\(([0-9]+\.[0-9]+)\*kW\)\r\n')
+        keys['kwh']['current_produced'] = self.get_float(rb'^1-0:2\.7\.0\(([0-9]+\.[0-9]+)\*kW\)\r\n')
 
         keys['gas'] = {}
-        keys['gas']['eid'] = self.get(b'^0-1:96\.1\.0\(([^)]+)\)\r\n')
-        keys['gas']['device_type'] = self.get_int(b'^0-1:24\.1\.0\((\d)+\)\r\n')
-        keys['gas']['total'] = self.get_float(b'^(?:0-1:24\.2\.1(?:\(\d+[SW]\))?)?\(([0-9]{5}\.[0-9]{3})(?:\*m3)?\)\r\n', 0)
-        keys['gas']['valve'] = self.get_int(b'^0-1:24\.4\.0\((\d)\)\r\n')
+        keys['gas']['eid'] = self.get(rb'^0-1:96\.1\.0\(([^)]+)\)\r\n')
+        keys['gas']['device_type'] = self.get_int(rb'^0-1:24\.1\.0\((\d)+\)\r\n')
+        keys['gas']['total'] = self.get_float(rb'^(?:0-1:24\.2\.1(?:\(\d+[SW]\))?)?\(([0-9]{5}\.[0-9]{3})(?:\*m3)?\)\r\n', 0)
+        keys['gas']['valve'] = self.get_int(rb'^0-1:24\.4\.0\((\d)\)\r\n')
 
-        measured_at = self.get(b'^(?:0-1:24\.[23]\.[01](?:\((\d+)[SW]?\))?)')
+        measured_at = self.get(rb'^(?:0-1:24\.[23]\.[01](?:\((\d+)[SW]?\))?)')
 
         if measured_at:
             keys['gas']['measured_at'] = int(mktime(datetime.strptime(measured_at, "%y%m%d%H%M%S").timetuple()))
@@ -158,15 +150,13 @@ class P1Packet(object):
             keys['gas']['measured_at'] = None
 
         keys['msg'] = {}
-        keys['msg']['code'] = self.get(b'^0-0:96\.13\.1\((\d+)\)\r\n')
-        keys['msg']['text'] = self.get(b'^0-0:96\.13\.0\((.+)\)\r\n')
+        keys['msg']['code'] = self.get(rb'^0-0:96\.13\.1\((\d+)\)\r\n')
+        keys['msg']['text'] = self.get(rb'^0-0:96\.13\.0\((.+)\)\r\n')
 
         self._keys = keys
 
-
     def __getitem__(self, key):
         return self._keys[key]
-
 
     def get_float(self, regex, default=None):
         result = self.get(regex, None)
@@ -174,13 +164,11 @@ class P1Packet(object):
             return default
         return float(self.get(regex, default))
 
-
     def get_int(self, regex, default=None):
         result = self.get(regex, None)
         if not result:
             return default
         return int(result)
-
 
     def get(self, regex, default=None):
         results = re.search(regex, self._datagram, re.MULTILINE)
@@ -188,9 +176,8 @@ class P1Packet(object):
             return default
         return results.group(1).decode('ascii')
 
-
     def validate(self):
-        pattern = re.compile(b'\r\n(?=!)')
+        pattern = re.compile(rb'\r\n(?=!)')
         for match in pattern.finditer(self._datagram):
             packet = self._datagram[:match.end() + 1]
             checksum = self._datagram[match.end() + 1:]
@@ -202,7 +189,6 @@ class P1Packet(object):
             if given_checksum != calculated_checksum:
                 log.error('Checksum mismatch: given={}, calculated={}'.format(given_checksum, calculated_checksum))
                 raise P1PacketError('P1Packet with invalid checksum found')
-
 
     def __str__(self):
         return self._datagram.decode('ascii')
