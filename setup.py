@@ -1,14 +1,5 @@
 #!/usr/bin/env python
-import re
-import io
-import codecs
-
 from setuptools import setup, find_packages
-
-
-def load_requirements(filename):
-    with io.open(filename, encoding='utf-8') as reqfile:
-        return [line.strip() for line in reqfile if not line.startswith('#')]
 
 
 setup(
@@ -19,10 +10,15 @@ setup(
     author_email='dirocco.nico@gmail.com',
     url='https://github.com/nrocco/smeterd',
     license='GPLv3',
-    long_description=codecs.open('README.md', 'rb', 'utf-8').read(),
+    long_description=open('README.md', 'r').read(),
+    long_description_content_type='text/markdown',
     download_url='https://github.com/nrocco/smeterd/tags',
     include_package_data=True,
-    install_requires=load_requirements('requirements.txt'),
+    install_requires=[
+        'click==7.1.2',
+        'crcmod==1.7',
+        'pyserial==3.4',
+    ],
     tests_require=[
         'coverage',
     ],
@@ -46,4 +42,5 @@ setup(
         'Topic :: Software Development :: Libraries :: Python Modules',
         'Topic :: Utilities'
     ],
+    python_requires='>=3.6',
 )

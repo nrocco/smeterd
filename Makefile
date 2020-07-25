@@ -11,9 +11,11 @@ clean:
 	find smeterd tests -name '.coverage*' -exec rm -f {} +
 	rm -rf .tox *.egg dist build .coverage MANIFEST || true
 
+
 .PHONY: test
 test:
 	python setup.py test
+
 
 .PHONY: coverage
 coverage:
@@ -21,9 +23,6 @@ coverage:
 	coverage report
 	coverage html
 
-.PHONY: upload
-upload: $(PY) clean test
-	$(PY) setup.py sdist register upload
 
 # The default make target is ci
 .DEFAULT_GOAL := ci

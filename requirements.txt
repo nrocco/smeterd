@@ -1,3 +1,0 @@
-click==7.1.2
-crcmod==1.7
-pyserial==3.4

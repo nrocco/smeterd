@@ -35,12 +35,6 @@ you are responsible for manually installing dependencies:
     $ python -m smeterd
 
 
-To install the required dependencies manually see `requirements.txt`
-or simply run:
-
-    $ pip install -r requirements.txt
-
-
 
 usage as a cli application
 --------------------------
