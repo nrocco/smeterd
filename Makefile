@@ -1,4 +1,4 @@
-ci: clean test
+ci: clean lint test
 
 
 .PHONY: clean
@@ -12,16 +12,18 @@ clean:
 	rm -rf .tox *.egg dist build .coverage MANIFEST || true
 
 
+.PHONY: lint
+lint:
+	flake8
+
 .PHONY: test
 test:
-	python setup.py test
+	pytest
 
 
 .PHONY: coverage
 coverage:
-	coverage run --source smeterd -- setup.py test
-	coverage report
-	coverage html
+	pytest --no-cov-on-fail --cov=smeterd --cov-report=term --cov-report=html tests/
 
 
 # The default make target is ci

@@ -1,0 +1,13 @@
+*
+!LICENSE
+!MANIFEST.in
+!README.md
+!contrib
+!setup.cfg
+!setup.py
+!smeterd
+!tests
+**/__pycache__
+**/*.pyc
+**/*.pyo
+**/*.pyd

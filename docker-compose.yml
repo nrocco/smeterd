@@ -1,0 +1,11 @@
+---
+version: "3.8"
+services:
+  python:
+    build:
+      context: .
+      target: pybase
+    init: true
+    command: ["sleep", "infinite"]
+    volumes:
+      - ".:/src"
