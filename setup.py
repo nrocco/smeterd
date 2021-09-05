@@ -19,9 +19,12 @@ setup(
         'crcmod==1.7',
         'pyserial==3.4',
     ],
-    tests_require=[
-        'coverage',
-    ],
+    extras_require={
+        'develop': [
+            'pytest',
+            'pytest-cov',
+        ],
+    },
     entry_points={
         'console_scripts': [
             'smeterd=smeterd.cli:cli',
