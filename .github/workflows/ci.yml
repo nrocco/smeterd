@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.6, 3.7, 3.8]
+        python-version: [3.6, 3.7, 3.8, 3.9]
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python ${{ matrix.python-version }}
@@ -20,11 +20,12 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install flake8
-        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+        python -m pip install flake8
+        python -m pip install -e .
+        python -m pip install -e '.[develop]'
     - name: Lint with flake8
       run: |
-        flake8
-    - name: Test with setuptools test
+        make lint
+    - name: Test & Coverage
       run: |
-        python setup.py test
+        make coverage
