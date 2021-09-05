@@ -15,7 +15,15 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install setuptools wheel twine
+        python -m pip install flake8 setuptools wheel twine
+        python -m pip install -e .
+        python -m pip install -e '.[develop]'
+    - name: Lint with flake8
+      run: |
+        make lint
+    - name: Test & Coverage
+      run: |
+        make coverage
     - name: Build and publish
       env:
         TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
