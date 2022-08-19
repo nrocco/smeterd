@@ -1,14 +1,17 @@
-ci: clean lint test
+MODULE = smeterd
+
+
+ci: clean lint coverage
 
 
 .PHONY: clean
 clean:
-	find smeterd tests -name '__pycache__' -exec rm -rf {} +
-	find smeterd tests -name '*.pyc' -exec rm -f {} +
-	find smeterd tests -name '*.pyo' -exec rm -f {} +
-	find smeterd tests -name '*~' -exec rm -f {} +
-	find smeterd tests -name '._*' -exec rm -f {} +
-	find smeterd tests -name '.coverage*' -exec rm -f {} +
+	find $(MODULE) tests -name '__pycache__' -exec rm -rf {} +
+	find $(MODULE) tests -name '*.pyc' -exec rm -f {} +
+	find $(MODULE) tests -name '*.pyo' -exec rm -f {} +
+	find $(MODULE) tests -name '*~' -exec rm -f {} +
+	find $(MODULE) tests -name '._*' -exec rm -f {} +
+	find $(MODULE) tests -name '.coverage*' -exec rm -f {} +
 	rm -rf .tox *.egg dist build .coverage MANIFEST || true
 
 
@@ -16,15 +19,20 @@ clean:
 lint:
 	flake8
 
+
 .PHONY: test
 test:
-	pytest
+	python -m pytest -vv
 
 
 .PHONY: coverage
 coverage:
-	pytest --no-cov-on-fail --cov=smeterd --cov-report=term --cov-report=html tests/
+	python -m pytest -vv --no-cov-on-fail --cov=$(MODULE) --cov-report=html --cov-report=term tests/
 
 
-# The default make target is ci
+.PHONY: build
+build: clean
+	python -m build --no-isolation
+
+
 .DEFAULT_GOAL := ci
