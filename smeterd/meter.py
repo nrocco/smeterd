@@ -163,15 +163,15 @@ class P1Packet(object):
         keys['instantaneous'] = {}
         keys['instantaneous']['l1'] = {}
         keys['instantaneous']['l1']['volts'] = self.get_float(rb'^1-0:32\.7\.0\((\d+\.\d+)\*V\)\r\n')
-        keys['instantaneous']['l1']['amps'] = self.get_int(rb'^1-0:31\.7\.0\((\d+)\*A\)\r\n')
+        keys['instantaneous']['l1']['amps'] = self.get_float(rb'^1-0:31\.7\.0\((\d+\.\d+)\*A\)\r\n')
         keys['instantaneous']['l1']['watts'] = self.get_float(rb'^1-0:21\.7\.0\((\d+\.\d+)\*kW\)\r\n', 0) * 1000
         keys['instantaneous']['l2'] = {}
         keys['instantaneous']['l2']['volts'] = self.get_float(rb'^1-0:52\.7\.0\((\d+\.\d+)\*V\)\r\n')
-        keys['instantaneous']['l2']['amps'] = self.get_int(rb'^1-0:51\.7\.0\((\d+)\*A\)\r\n')
+        keys['instantaneous']['l2']['amps'] = self.get_float(rb'^1-0:51\.7\.0\((\d+\.\d+)\*A\)\r\n')
         keys['instantaneous']['l2']['watts'] = self.get_float(rb'^1-0:41\.7\.0\((\d+\.\d+)\*kW\)\r\n', 0) * 1000
         keys['instantaneous']['l3'] = {}
         keys['instantaneous']['l3']['volts'] = self.get_float(rb'^1-0:72\.7\.0\((\d+\.\d+)\*V\)\r\n')
-        keys['instantaneous']['l3']['amps'] = self.get_int(rb'^1-0:71\.7\.0\((\d+)\*A\)\r\n')
+        keys['instantaneous']['l3']['amps'] = self.get_float(rb'^1-0:71\.7\.0\((\d+\.\d+)\*A\)\r\n')
         keys['instantaneous']['l3']['watts'] = self.get_float(rb'^1-0:61\.7\.0\((\d+\.\d+)\*kW\)\r\n', 0) * 1000
 
         keys['gas'] = {}
