@@ -20,10 +20,15 @@ class SmartMeter(object):
         'xonxoff': False,
         'timeout': 10,
     }
+    serial_rts = False
 
     def __init__(self, port, **kwargs):
         config = {}
         config.update(self.serial_defaults)
+
+        # This is quite uggly. The config part should probably be rewritten.
+        self.serial_rts = kwargs['rts']
+        del kwargs['rts']
         config.update(kwargs)
 
         log.debug('Open serial connect to {} with: {}'.format(port, ', '.join('{}={}'.format(key, value) for key, value in config.items())))
@@ -33,7 +38,7 @@ class SmartMeter(object):
         except (serial.SerialException, OSError) as e:
             raise SmartMeterError(e)
         else:
-            self.serial.setRTS(False)
+            self.serial.setRTS(self.serial_rts)
             self.port = self.serial.name
 
         log.info('New serial connection opened to %s', self.port)
@@ -42,7 +47,7 @@ class SmartMeter(object):
         if not self.serial.isOpen():
             log.info('Opening connection to `%s`', self.serial.name)
             self.serial.open()
-            self.serial.setRTS(False)
+            self.serial.setRTS(self.serial_rts)
         else:
             log.debug('`%s` was already open.', self.serial.name)
 
