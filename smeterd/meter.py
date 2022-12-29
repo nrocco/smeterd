@@ -6,8 +6,10 @@ import crcmod.predefined
 from time import mktime
 from datetime import datetime
 
-
 log = logging.getLogger(__name__)
+# Uncomment this line to enable debug logging:
+# logging.basicConfig(level=logging.DEBUG)
+
 crc16 = crcmod.predefined.mkPredefinedCrcFun('crc16')
 
 
@@ -138,6 +140,14 @@ class P1Packet(object):
         keys['kwh']['tariff'] = self.get_int(rb'^0-0:96\.14\.0\(([0-9]+)\)\r\n')
         keys['kwh']['switch'] = self.get_int(rb'^0-0:96\.3\.10\((\d)\)\r\n')
         keys['kwh']['treshold'] = self.get_float(rb'^0-0:17\.0\.0\(([0-9]{4}\.[0-9]{2})\*kW\)\r\n')
+
+        keys['kwh']['total_consumed'] = {}
+        keys['kwh']['total_consumed']['active']   = self.get_float(rb'^1-0:1\.8\.0\(([0-9]+\.[0-9]+)\*kWh\)\r\n')
+        keys['kwh']['total_consumed']['reactive'] = self.get_float(rb'^1-0:3\.8\.0\(([0-9]+\.[0-9]+)\*kvarh\)\r\n')
+
+        keys['kwh']['total_input'] = {}
+        keys['kwh']['total_input']['active']   = self.get_float(rb'^1-0:2\.8\.0\(([0-9]+\.[0-9]+)\*kWh\)\r\n')
+        keys['kwh']['total_input']['reactive'] = self.get_float(rb'^1-0:4\.8\.0\(([0-9]+\.[0-9]+)\*kvarh\)\r\n')
 
         keys['kwh']['low'] = {}
         keys['kwh']['low']['consumed'] = self.get_float(rb'^1-0:1\.8\.1\(([0-9]+\.[0-9]+)\*kWh\)\r\n')
