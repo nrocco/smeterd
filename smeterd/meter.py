@@ -29,8 +29,9 @@ class SmartMeter(object):
         config.update(self.serial_defaults)
 
         # This is quite uggly. The config part should probably be rewritten.
-        self.serial_rts = kwargs['rts']
-        del kwargs['rts']
+        if 'rts' in kwargs:
+            self.serial_rts = kwargs['rts']
+            del kwargs['rts']
         config.update(kwargs)
 
         log.debug('Open serial connect to {} with: {}'.format(port, ', '.join('{}={}'.format(key, value) for key, value in config.items())))
