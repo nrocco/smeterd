@@ -38,7 +38,7 @@ class SmartMeter(object):
         except (serial.SerialException, OSError) as e:
             raise SmartMeterError(e)
         else:
-            self.serial.setRTS(self.serial_rts)
+            self.serial.rts = self.serial_rts
             self.port = self.serial.name
 
         log.info('New serial connection opened to %s', self.port)
@@ -47,7 +47,7 @@ class SmartMeter(object):
         if not self.serial.isOpen():
             log.info('Opening connection to `%s`', self.serial.name)
             self.serial.open()
-            self.serial.setRTS(self.serial_rts)
+            self.serial.rts = self.serial_rts
         else:
             log.debug('`%s` was already open.', self.serial.name)
 
