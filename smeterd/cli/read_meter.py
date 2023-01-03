@@ -16,9 +16,10 @@ from smeterd.meter import SmartMeter
 @click.option('--serial-stopbits', help='number of stop bits', default=str(serial.STOPBITS_ONE), type=click.Choice(['1', '1.5', '2']))
 @click.option('--serial-timeout', help='set a read timeout value in seconds', default=10, type=int)
 @click.option('--serial-xonxoff', help='enable software flow control. By default software flow control is disabled', is_flag=True)
+@click.option('--serial-rts', help='Enable RTS flow control.', is_flag=True)
 @click.option('--show-output', help='choose output to display', default=('time', 'consumed', 'tariff', 'gas_measured_at'), multiple=True, type=click.Choice(['time', 'kwh_eid', 'gas_eid', 'consumed', 'tariff', 'gas_measured_at', 'produced', 'current']))
 @click.option('--tsv', help='display packet in tab separated value form', is_flag=True)
-def read_meter(elec_unit, gas_unit, raw, serial_baudrate, serial_bytesize, serial_parity, serial_port, serial_stopbits, serial_timeout, serial_xonxoff, show_output, tsv):
+def read_meter(elec_unit, gas_unit, raw, serial_baudrate, serial_bytesize, serial_parity, serial_port, serial_stopbits, serial_timeout, serial_xonxoff, serial_rts, show_output, tsv):
     '''
     read a single P1 packet to stdout.
 
@@ -38,6 +39,7 @@ def read_meter(elec_unit, gas_unit, raw, serial_baudrate, serial_bytesize, seria
         stopbits=float(serial_stopbits),
         xonxoff=serial_xonxoff,
         timeout=serial_timeout,
+        rts=serial_rts,
     )
 
     with meter:
