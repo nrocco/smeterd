@@ -142,24 +142,17 @@ class P1Packet(object):
         keys['kwh']['switch'] = self.get_int(rb'^0-0:96\.3\.10\((\d)\)\r\n')
         keys['kwh']['treshold'] = self.get_float(rb'^0-0:17\.0\.0\(([0-9]{4}\.[0-9]{2})\*kW\)\r\n')
 
-        keys['kwh']['total_consumed'] = {}
-        keys['kwh']['total_consumed']['active']   = self.get_float(rb'^1-0:1\.8\.0\(([0-9]+\.[0-9]+)\*kWh\)\r\n')
-        keys['kwh']['total_consumed']['reactive'] = self.get_float(rb'^1-0:3\.8\.0\(([0-9]+\.[0-9]+)\*kvarh\)\r\n')
+        keys['kwh']['consumed'] = {}
+        keys['kwh']['consumed']['now']   = self.get_float(rb'^1-0:1\.7\.0\(([0-9]+\.[0-9]+)\*kW\)\r\n')
+        keys['kwh']['consumed']['total'] = self.get_float(rb'^1-0:1\.8\.0\(([0-9]+\.[0-9]+)\*kWh\)\r\n')
+        keys['kwh']['consumed']['low']   = self.get_float(rb'^1-0:1\.8\.1\(([0-9]+\.[0-9]+)\*kWh\)\r\n')
+        keys['kwh']['consumed']['high']  = self.get_float(rb'^1-0:1\.8\.2\(([0-9]+\.[0-9]+)\*kWh\)\r\n')
 
-        keys['kwh']['total_input'] = {}
-        keys['kwh']['total_input']['active']   = self.get_float(rb'^1-0:2\.8\.0\(([0-9]+\.[0-9]+)\*kWh\)\r\n')
-        keys['kwh']['total_input']['reactive'] = self.get_float(rb'^1-0:4\.8\.0\(([0-9]+\.[0-9]+)\*kvarh\)\r\n')
-
-        keys['kwh']['low'] = {}
-        keys['kwh']['low']['consumed'] = self.get_float(rb'^1-0:1\.8\.1\(([0-9]+\.[0-9]+)\*kWh\)\r\n')
-        keys['kwh']['low']['produced'] = self.get_float(rb'^1-0:2\.8\.1\(([0-9]+\.[0-9]+)\*kWh\)\r\n')
-
-        keys['kwh']['high'] = {}
-        keys['kwh']['high']['consumed'] = self.get_float(rb'^1-0:1\.8\.2\(([0-9]+\.[0-9]+)\*kWh\)\r\n')
-        keys['kwh']['high']['produced'] = self.get_float(rb'^1-0:2\.8\.2\(([0-9]+\.[0-9]+)\*kWh\)\r\n')
-
-        keys['kwh']['current_consumed'] = self.get_float(rb'^1-0:1\.7\.0\(([0-9]+\.[0-9]+)\*kW\)\r\n')
-        keys['kwh']['current_produced'] = self.get_float(rb'^1-0:2\.7\.0\(([0-9]+\.[0-9]+)\*kW\)\r\n')
+        keys['kwh']['produced'] = {}
+        keys['kwh']['produced']['now']   = self.get_float(rb'^1-0:2\.7\.0\(([0-9]+\.[0-9]+)\*kW\)\r\n')
+        keys['kwh']['produced']['total'] = self.get_float(rb'^1-0:2\.8\.0\(([0-9]+\.[0-9]+)\*kWh\)\r\n')
+        keys['kwh']['produced']['low']   = self.get_float(rb'^1-0:2\.8\.1\(([0-9]+\.[0-9]+)\*kWh\)\r\n')
+        keys['kwh']['produced']['high']  = self.get_float(rb'^1-0:2\.8\.2\(([0-9]+\.[0-9]+)\*kWh\)\r\n')
 
         keys['instantaneous'] = {}
         keys['instantaneous']['l1'] = {}
