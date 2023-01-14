@@ -72,10 +72,14 @@ def read_meter(elec_unit, gas_unit, raw, serial_baudrate, serial_bytesize, seria
     if ('gas_eid' in show_output):
         data.append(('Gas serial', packet['gas']['eid']))
     if ('consumed' in show_output):
-        data.extend([
-            ('Total electricity consumed (high, {})'.format(elec_unit), int(packet['kwh']['high']['consumed'] * elec_unit_factor[elec_unit])),
-            ('Total electricity consumed (low, {})'.format(elec_unit), int(packet['kwh']['low']['consumed'] * elec_unit_factor[elec_unit])),
-            ('Total gas consumed ({})'.format(gas_unit), int(packet['gas']['total'] * gas_unit_factor[gas_unit]))])
+        if packet['kwh']['consumed']['total']:
+            data.extend([('Total electricity consumed (total, {})'.format(elec_unit), float(packet['kwh']['consumed']['total'] * elec_unit_factor[elec_unit]))])
+        if packet['kwh']['consumed']['high']:
+            data.extend([('Total electricity consumed (high, {})'.format(elec_unit), float(packet['kwh']['consumed']['high'] * elec_unit_factor[elec_unit]))])
+        if packet['kwh']['consumed']['low']:
+            data.extend([('Total electricity consumed (low, {})'.format(elec_unit), float(packet['kwh']['consumed']['low'] * elec_unit_factor[elec_unit]))])
+        if packet['gas']['total']:
+            data.extent([('Total gas consumed ({})'.format(gas_unit), int(packet['gas']['total'] * gas_unit_factor[gas_unit]))])
     if ('produced' in show_output):
         data.extend([
             ('Total electricity produced (high, {})'.format(elec_unit), int(packet['kwh']['high']['produced'] * elec_unit_factor[elec_unit])),
