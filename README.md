@@ -131,20 +131,20 @@ so you can integrate the reading of P1 packets into your own solutions.
 
 First initiate a new SmartMeter object:
 ```python
-    >>> from smeterd.meter import SmartMeter
-    >>> meter = SmartMeter('/dev/ttyS0')
+from smeterd.meter import SmartMeter
+meter = SmartMeter('/dev/ttyS0')
 ```
 
 Now to read one packet from the meter:
 ```python
-    >>> packet = meter.read_one_packet()
-    >>> print(packet)
-    >>> print(packet['instantaneous']['l1']['volts'])
+packet = meter.read_one_packet()
+print(packet)
+print(packet['instantaneous']['l1']['volts'])
 ```
 
 Do not forget to close the connection to the serial port:
 ```python
-    >>> meter.disconnect()
+meter.disconnect()
 ```
 
 The `SmartMeter.meter.read_one_packet()` function will return an instance of
