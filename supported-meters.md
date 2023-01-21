@@ -1,7 +1,6 @@
 # Overview
 
-All smart meeters with a P1 port should be suppored.  
-This is a list of known supported smart meters and the connection settings, but other meeters should work as well.
+This is a list of known working smart meters and the connection settings, but all meters with a P1 meters should work as well.
 
 ### S34U18
 Used by Vattenfall and several Swedish grid operators.  
