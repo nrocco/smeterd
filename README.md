@@ -5,6 +5,7 @@ smeterd
 
 Read P1 smart meter packets in Python
 
+[Supported meters](supported-meters.md)
 
 installation
 ------------
