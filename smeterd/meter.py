@@ -141,16 +141,16 @@ class P1Packet(object):
         keys['kwh']['treshold'] = self.get_float(rb'^0-0:17\.0\.0\(([0-9]{4}\.[0-9]{2})\*kW\)\r\n')
 
         keys['kwh']['consumed'] = {}
-        keys['kwh']['consumed']['now']   = self.get_float(rb'^1-0:1\.7\.0\(([0-9]+\.[0-9]+)\*kW\)\r\n')
+        keys['kwh']['consumed']['now'] = self.get_float(rb'^1-0:1\.7\.0\(([0-9]+\.[0-9]+)\*kW\)\r\n')
         keys['kwh']['consumed']['total'] = self.get_float(rb'^1-0:1\.8\.0\(([0-9]+\.[0-9]+)\*kWh\)\r\n')
-        keys['kwh']['consumed']['low']   = self.get_float(rb'^1-0:1\.8\.1\(([0-9]+\.[0-9]+)\*kWh\)\r\n') # Tariff 1
-        keys['kwh']['consumed']['high']  = self.get_float(rb'^1-0:1\.8\.2\(([0-9]+\.[0-9]+)\*kWh\)\r\n') # Tariff 2
+        keys['kwh']['consumed']['low'] = self.get_float(rb'^1-0:1\.8\.1\(([0-9]+\.[0-9]+)\*kWh\)\r\n')  # Tariff 1
+        keys['kwh']['consumed']['high'] = self.get_float(rb'^1-0:1\.8\.2\(([0-9]+\.[0-9]+)\*kWh\)\r\n')  # Tariff 2
 
         keys['kwh']['produced'] = {}
-        keys['kwh']['produced']['now']   = self.get_float(rb'^1-0:2\.7\.0\(([0-9]+\.[0-9]+)\*kW\)\r\n')
+        keys['kwh']['produced']['now'] = self.get_float(rb'^1-0:2\.7\.0\(([0-9]+\.[0-9]+)\*kW\)\r\n')
         keys['kwh']['produced']['total'] = self.get_float(rb'^1-0:2\.8\.0\(([0-9]+\.[0-9]+)\*kWh\)\r\n')
-        keys['kwh']['produced']['low']   = self.get_float(rb'^1-0:2\.8\.1\(([0-9]+\.[0-9]+)\*kWh\)\r\n') # Tariff 1
-        keys['kwh']['produced']['high']  = self.get_float(rb'^1-0:2\.8\.2\(([0-9]+\.[0-9]+)\*kWh\)\r\n') # Tariff 2
+        keys['kwh']['produced']['low'] = self.get_float(rb'^1-0:2\.8\.1\(([0-9]+\.[0-9]+)\*kWh\)\r\n')  # Tariff 1
+        keys['kwh']['produced']['high'] = self.get_float(rb'^1-0:2\.8\.2\(([0-9]+\.[0-9]+)\*kWh\)\r\n')  # Tariff 2
 
         keys['instantaneous'] = {}
         keys['instantaneous']['l1'] = {}
