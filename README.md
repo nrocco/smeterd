@@ -161,3 +161,11 @@ contribute
 4. Make sure that tests pass (`make test`)
 5. Push to the branch (`git push origin my-new-feature`)
 6. Create new Pull Request
+
+standards
+---------
+
+The P1 port is described in the `P1 companion standard / Dutch Smart Meter Requirements` published by *Netbeheer Nederland* (association of the Netherlands' energy network operators):  
+https://www.netbeheernederland.nl/_upload/Files/Slimme_meter_15_a727fce1f1.pdf
+
+The dataformat is described in `IEC 62056-21 (Electrical metering-Data exchange for meter reading, tariff and load control – Part 21: direct local data exchange, 2002-05)`.
