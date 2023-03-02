@@ -5,6 +5,7 @@ smeterd
 
 Read P1 smart meter packets in Python
 
+[Supported meters](supported-meters.md)
 
 installation
 ------------
@@ -122,8 +123,6 @@ command line option you will see the raw packet from the smart meter:
     !
 
 
-
-
 usage as a python module
 ------------------------
 
@@ -132,20 +131,22 @@ is quite limited. You can use the `smeterd` package as a regular python module
 so you can integrate the reading of P1 packets into your own solutions.
 
 First initiate a new SmartMeter object:
-
-    >>> from smeterd.meter import SmartMeter
-    >>> meter = SmartMeter('/dev/ttyS0')
-
+```python
+from smeterd.meter import SmartMeter
+meter = SmartMeter('/dev/ttyS0')
+```
 
 Now to read one packet from the meter:
-
-    >>> packet = meter.read_one_packet()
-    >>> print packet
+```python
+packet = meter.read_one_packet()
+print(packet)
+print(packet['instantaneous']['l1']['volts'])
+```
 
 Do not forget to close the connection to the serial port:
-
-    >>> meter.disconnect()
-
+```python
+meter.disconnect()
+```
 
 The `SmartMeter.meter.read_one_packet()` function will return an instance of
 the `smeterd.meter.P1Packet` class.
@@ -160,3 +161,11 @@ contribute
 4. Make sure that tests pass (`make test`)
 5. Push to the branch (`git push origin my-new-feature`)
 6. Create new Pull Request
+
+standards
+---------
+
+The P1 port is described in the `P1 companion standard / Dutch Smart Meter Requirements` published by *Netbeheer Nederland* (association of the Netherlands' energy network operators):  
+https://www.netbeheernederland.nl/_upload/Files/Slimme_meter_15_a727fce1f1.pdf
+
+The dataformat is described in `IEC 62056-21 (Electrical metering-Data exchange for meter reading, tariff and load control – Part 21: direct local data exchange, 2002-05)`.
