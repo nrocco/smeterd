@@ -1,38 +1,36 @@
-MODULE = smeterd
-
-
 ci: clean lint coverage
 
 
 .PHONY: clean
 clean:
-	find $(MODULE) tests -name '__pycache__' -exec rm -rf {} +
-	find $(MODULE) tests -name '*.pyc' -exec rm -f {} +
-	find $(MODULE) tests -name '*.pyo' -exec rm -f {} +
-	find $(MODULE) tests -name '*~' -exec rm -f {} +
-	find $(MODULE) tests -name '._*' -exec rm -f {} +
-	find $(MODULE) tests -name '.coverage*' -exec rm -f {} +
-	rm -rf .tox *.egg dist build .coverage MANIFEST || true
+	find src tests -name '__pycache__' -exec rm -rf {} +
+	find src tests -name '*.pyc' -exec rm -f {} +
+	find src tests -name '*.pyo' -exec rm -f {} +
+	find src tests -name '*~' -exec rm -f {} +
+	find src tests -name '._*' -exec rm -f {} +
+	find src tests -name '.coverage*' -exec rm -f {} +
+	rm -rf .tox .pytest_cache *.egg *.egg-info dist build htmlcov .coverage MANIFEST
 
 
 .PHONY: lint
 lint:
-	flake8
+	uv run ruff check src/ tests/
+	uv run ruff format --check src/ tests/
 
 
 .PHONY: test
 test:
-	python -m pytest -vv
+	uv run pytest -vv
 
 
 .PHONY: coverage
 coverage:
-	python -m pytest -vv --no-cov-on-fail --cov=$(MODULE) --cov-report=html --cov-report=term tests/
+	uv run pytest -vv --no-cov-on-fail --cov=src --cov-report=term --cov-report=html --cov-report=xml
 
 
 .PHONY: build
 build: clean
-	python -m build --no-isolation
+	uv build
 
 
 .DEFAULT_GOAL := ci

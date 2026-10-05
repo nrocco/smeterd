@@ -1,3 +1,63 @@
+[project]
+name = "smeterd"
+dynamic = ["version"]
+description = "Read smart meter P1 packets"
+readme = "README.md"
+license = { text = "GPLv3" }
+authors = [
+    { name = "Nico Di Rocco", email = "dirocco.nico@gmail.com" },
+]
+keywords = ["smartmeter", "kwh", "gas", "p1"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: Console",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Operating System :: Unix",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Utilities",
+]
+requires-python = ">=3.12"
+dependencies = [
+    "click~=8.4",
+    "crcmod",
+    "pyserial",
+]
+
+[project.urls]
+Homepage = "https://github.com/nrocco/smeterd"
+
+[dependency-groups]
+dev = [
+    "pytest",
+    "pytest-cov",
+    "ruff",
+]
+
+[project.scripts]
+smeterd = "smeterd.cli:cli"
+
 [build-system]
-requires = ["setuptools >= 40.6.0", "wheel"]
-build-backend = "setuptools.build_meta"
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
+
+[tool.hatch.version]
+source = "vcs"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 320
+
+[tool.ruff.lint]
+extend-select = [
+    "C90",  # mccabe complexity, previously enforced by flake8
+]
+ignore = [
+    "E501",  # E501 is the line-too-long rule
+]
+
+[tool.ruff.lint.mccabe]
+max-complexity = 12

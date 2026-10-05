@@ -1,0 +1,16 @@
+---
+services:
+  python:
+    build:
+      context: .
+      target: dev
+    init: true
+    restart: unless-stopped
+    command: ["sleep", "infinity"]
+    volumes:
+      - "./:/app/"
+      - "venv_state:/opt/venv"
+      - "uv_cache:/root/.cache/uv"
+volumes:
+  venv_state: {}
+  uv_cache: {}
